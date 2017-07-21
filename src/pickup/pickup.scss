@@ -1,13 +1,12 @@
 map{
-   pointer-events:none;
 
-   #locator{
-       background-image:url('./../assets/icon/person.png');
+   .locator{
+       background-image:url('./../assets/icon/map-marker.png');
        position: absolute;
-       left:50%;
-       top:50%;
-       width:50px;
-       height:50px;
+       left:51.3%;
+       top:55.3%; //커질수록 아래로 감.
+       width:32px;
+       height:32px;
        margin-left: -25px;
        margin-top: -50px;
    }

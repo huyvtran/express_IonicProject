@@ -7,20 +7,42 @@
       <button (click)="map.centerLocation()"><ion-icon name="navigate"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
+
 </ion-header>
 
-<ion-content padding class="home">
-  <ion-list>
-    <ion-item>
-      <ion-label floating>Destination</ion-label>
-      <ion-input type="password" [(ngModel)]="Destination"></ion-input>
-    </ion-item>
-  </ion-list>
-  <button ion-button full (click)="calculateAndDisplayRoute()" >Get Direction</button>
-  
-  Destination : {{Destination}}
+<ion-content  class="home">
+
+  <div class="upper" id="upper">
+    <ion-row>
+      <ion-col width-50> 
+      <ion-list>
+        <ion-item>
+            <ion-label color="primary" floating>출발역</ion-label>
+            <ion-input [(ngModel)]="start"></ion-input>
+        </ion-item>
+      </ion-list>
+      </ion-col>
+
+       <ion-col width-50>
+            <ion-list>
+              <ion-item>
+                  <ion-label color="primary" floating>도착역</ion-label>
+                   <ion-input [(ngModel)]="destination"></ion-input>
+              </ion-item>
+            </ion-list>
+       </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <button  ion-button block color="dark" (click)="map.getGeoCoding()"  >Request PickUp</button>
+          {{start}}   {{destination}}
+      </ion-col>
+    </ion-row>
+    
+  </div>
   <div class="map-wrapper">
-    <map #map></map>
+    <map  (drag_second)="drag_second($event)" #map [isPickupRequested]="isPickupRequested"></map>
   </div>
   <div class="bottom request-control">
     <ion-row>
@@ -47,10 +69,6 @@
         <button [hidden]="!isPickupRequested" ion-button block color="dark"  (click)="cancelPickUp()">Cancel PickUp</button>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col>
-        <button ion-button primary>Pickup time is ...</button>
-      </ion-col>
-    </ion-row>
+    
   </div>
 </ion-content>

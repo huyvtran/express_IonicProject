@@ -8,4 +8,14 @@ map{
         height:100%;
         width:100%
     }
+     .locator{
+       background-image:url('./../assets/icon/map-marker.png');
+       position: absolute;
+       left:50%;
+       top:50%;
+       width:32px;
+       height:32px;
+       margin-left: -25px;
+       margin-top: -50px;
+   }
 }

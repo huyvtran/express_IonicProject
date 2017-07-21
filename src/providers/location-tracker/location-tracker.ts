@@ -27,7 +27,6 @@ constructor(public zone: NgZone,private backgroundGeolocation: BackgroundGeoloca
   };
  console.log("starting tracking");
   this.backgroundGeolocation.configure(config).subscribe((location) => {
-    console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
     // Run update inside of Angular's zone
         this.location.lat=   123;
  this.location.lng= 124;
@@ -57,7 +56,6 @@ let options = {
   this.geolocation.watchPosition().subscribe(position => {
     if ((position as Geoposition).coords != undefined) {
       var geoposition = (position as Geoposition);
-      console.log('Latitude: ' + geoposition.coords.latitude + ' - Longitude: ' + geoposition.coords.longitude);
       
     } else { 
      

@@ -6,6 +6,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class FirebaseService{
     item:FirebaseListObservable<any>;
+    users:any;
+    arr_key:any;
     constructor(public afd:AngularFireDatabase){
         console.log("provider!");
 
@@ -44,7 +46,33 @@ export class FirebaseService{
     //         console.log(result);
     //         return result;
     //     })
+      
+    getLocation(){
+        var count;
+        var array_value=[];
 
+        console.log("getLocation")
+        this.item=this.afd.list('/loc', { preserveSnapshot: true });
+        this.item
+            .subscribe(snapshots => {
+                console.log("getLocation222")
+                snapshots.forEach(snapshot => {
+                    array_value.push(snapshot.key);
+                console.log(snapshot.key)
+                console.log(snapshot.val())
+                });
+            })
+            console.log("snapshot result"+this.arr_key);
+            console.log(array_value);
+            return array_value;
+        //  this.item.forEach(element => {
+        //      console.log("getLocation333")
+        //     console.log(element);
+        //     return element;
+        // });
+        
+        
+    }
     addMapLocation(location:any){
         console.log("maplocal");
         console.log(location.create_date);

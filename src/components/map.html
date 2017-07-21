@@ -1,3 +1,11 @@
+
+
 <div class="wrapper">
-    <div id="map"></div>
+    <div id="map" ></div>
+    <pickup [map]="map" [refreshing]="refreshing" [lat]="lat" [lng]="lng" [isPinSet]="isMapIdle" (dragging)="dragging($event)" (updatedPickupLocation)="updatedPickupLocation($event)"></pickup>
+
+    <available-cars   [map]="map" [isPickupRequested]="isPickupRequested">
+      
+    </available-cars>
+  <pickup-car [map]="map" [isPickupRequested]="isPickupRequested" [pickupLocation]="currentLocation"></pickup-car>
 </div>

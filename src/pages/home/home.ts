@@ -1,14 +1,14 @@
+import { MetroService } from './../../services/metroService';
 import { MapDirective } from './../../components/map';
 import { Observable, Subscription } from 'rxjs/Rx';
 import { LocationTracker } from './../../providers/location-tracker/location-tracker';
 import { Location } from './../../models/location';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseService } from './../../providers/firebase-service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { NavController, LoadingController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
-
-
+import firebase from 'firebase';
 declare var google;
 @Component({
   selector: 'page-home',
@@ -16,12 +16,53 @@ declare var google;
   entryComponents: [MapDirective]
 })
 
-export class HomePage implements OnInit  {
+export class HomePage implements OnInit,OnChanges  {
   location={} as Location
   Destination:string;
   MyLocation:any;
+  geoCode:boolean=false;
   isPickupRequested:boolean=false;
-  constructor(public navCtrl: NavController,public loading:LoadingController, public fb:FirebaseService, private geo:Geolocation,private afDatabase:AngularFireDatabase,public lt:LocationTracker) {
+  start:string;
+  destination:string;
+  @Input() test:any;
+  public isactive:any;
+  firestore=firebase.database().ref('/pushtokens');
+  firemsg=firebase.database().ref('/messages');
+  constructor(public navCtrl: NavController,public loading:LoadingController, public fb:FirebaseService, 
+    private geo:Geolocation,private afDatabase:AngularFireDatabase,public lt:LocationTracker
+  ,public metro: MetroService) {
+    console.log("metro");
+    console.log(metro);
+   
+  }
+  ionViewDidLoad(){
+    
+  }
+  
+  starting(value){
+    this.start=value;
+    console.log("get value : "+value);
+  }
+  ending(value){
+    this.destination=value;
+  }
+  drag_second(trigger){
+        console.log("dragged222222"+trigger);
+        var upper=document.getElementById("upper");
+        console.log(upper);
+        if(trigger){
+
+        upper.setAttribute('class','upper isactive');
+        }else{
+          upper.removeAttribute('class');
+          upper.setAttribute('class','upper');
+        }
+    }
+  ngOnChanges() {
+    console.log("change"+this.test);
+    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
+    //Add 'implements OnChanges' to the class.
+    console.log("Homepage on change");
   }
   ngOnInit(){
     //this.calculateAndDisplayRoute();
@@ -33,7 +74,9 @@ export class HomePage implements OnInit  {
   confirmPickUp(){
     this.isPickupRequested=true;
   }
-  
+  getGeoCoding(){
+    this.geoCode=true;
+  }
 
     calculateAndDisplayRoute() {
       console.log("sdss");
@@ -119,8 +162,6 @@ export class HomePage implements OnInit  {
             console.log(pos.lat+"lng2222 : "+pos.lng);
           }, function(data) {
             console.log(data);
-            alert("!!!");
-            alert(data);
           });
         } 
       }

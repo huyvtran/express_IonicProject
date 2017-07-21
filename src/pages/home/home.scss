@@ -1,12 +1,47 @@
 page-home {
+    .entering{
+      
+    }
+   
+    ion-app.md [padding] .scroll-content {
+    padding:0px;
+    }
     .home{
-        position:relative;
 
+        padding:0px;
+        position:relative;
+        .isactive{
+                display:none;
+            }
+        .upper{
+            
+            position: absolute;
+            z-index: 111111;
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+            width: 80%;
+            height:25%;
+            border: 3px solid #73AD21;
+            padding: 10px;
+            text-align: center;
+            background-color:#ffffff;
+            .row{
+                height: 50%;
+                margin-bottom: 1rem;
+            }
+            .col{
+                padding:0px;
+            }
+        }
         .bottom{
-        position: absolute;
-        bottom:0;
-        height:30%;
-        width:100%;
+                position: absolute;
+                bottom: 0;
+                height: 40%;
+                top: 99%;
+                width: 100%;
+                margin: auto;
     }
     .request-control{
         text-align: center;
