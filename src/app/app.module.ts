@@ -16,19 +16,10 @@ import { AvailbleCarDirective } from '../components/available-cars/available-car
 import { NativeGeocoder,NativeGeocoderReverseResult} from '@ionic-native/native-geocoder';
 
 import { FormsModule } from '@angular/forms';
-import {
- GoogleMaps,
- GoogleMap,
- GoogleMapsEvent,
- LatLng,
- CameraPosition,
- MarkerOptions,
- Marker
-} from '@ionic-native/google-maps';
+
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { Geolocation } from '@ionic-native/geolocation';
-import { LocationTracker } from '../providers/location-tracker/location-tracker';
 import { CarProvider } from '../providers/car/car';
 import { SimulateProvider } from '../providers/simulate/simulate';
 import { AutoCompleteModule } from 'ionic2-auto-complete';
@@ -77,7 +68,6 @@ import { AutoCompleteModule } from 'ionic2-auto-complete';
     Geolocation,FirebaseService,
     AngularFireModule,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    LocationTracker,
     CarProvider,
     SimulateProvider,
     MetroService

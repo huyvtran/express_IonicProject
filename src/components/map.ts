@@ -1,14 +1,11 @@
-import { LocationTracker } from './../providers/location-tracker/location-tracker';
 import { PickupCar } from './pickup-car/pickup-car';
 import { CarProvider } from './../providers/car/car';
 import { PickupDirective } from './../pickup/pickup';
 import { Observable } from 'rxjs/Rx';
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation';
 import { NavController, LoadingController } from 'ionic-angular';
 import { AvailbleCarDirective } from './available-cars/available-cars';
-import { NativeGeocoder,NativeGeocoderReverseResult} from '@ionic-native/native-geocoder';
-
+import { Geolocation } from '@ionic-native/geolocation';
 declare var google;
 
 @Component({
@@ -26,7 +23,6 @@ export class MapDirective implements OnInit,OnChanges  {
     @Output() drag_second : EventEmitter<any>=new EventEmitter();
     public refreshing:boolean=false;
     public map:any;
-    public geocoder:any;
     public isMapIdle:boolean;
     public currentLocation:any;
     full_address:string = "hahaha"
@@ -34,10 +30,9 @@ export class MapDirective implements OnInit,OnChanges  {
     lat:number;
     lng:number;
     
-    constructor(public loading:LoadingController,public geo:Geolocation,public pick:PickupDirective
-    ,private nativeGeocoder: NativeGeocoder,public lt:LocationTracker){
+    constructor(public loading:LoadingController,public pick:PickupDirective,public geo:Geolocation
+  ){
         this.full_address='jsjs';
-        this.lt.startTracking();
         
     }
     dragging(trigger){
@@ -63,33 +58,10 @@ export class MapDirective implements OnInit,OnChanges  {
         }
         
     }
-    getGeoCoding(lat,lng){
-        console.log("ful"+lat+","+lng);
-        var full=this.full_address;
-        let request = {
-                  latLng: {lat:lat,lng:lng}
-                };  
-        this.geocoder=new google.maps.Geocoder();
-        this.geocoder.geocode(request,  (results, status) => {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                      if (results[0] != null) {
-                                         
-                       let city=results[0].address_components[results[0].address_components.length-3].short_name; 
-                       let gu = results[0].address_components[results[0].address_components.length-4].short_name;    
-                       let dong=results[0].address_components[results[0].address_components.length-5].short_name; 
-                       let detail=results[0].address_components[results[0].address_components.length-6].short_name; 
-                       console.log("this.full_address"+ this.full_address);
-                       this.full_address=city+" "+gu+" "+dong+" "+detail;
-                       console.log("this.full_address2"+ this.full_address);
-                      } else {
-                        alert("No address available");
-                      }
-                    }
-                  });
-        // this.nativeGeocoder.reverseGeocode(52.5072095, 13.1452818)
-        // .then((result: NativeGeocoderReverseResult) => console.log('The address is ' + result.street + ' in ' + result.countryCode))
-        // .catch((error: any) => console.log(error));
+    calling(){
+
     }
+    
     ngOnInit(){
         this.map=this.createMap();
         this.addMapEventListener();
@@ -172,7 +144,6 @@ centerLocation(location){
       let lng=resp.coords.longitude;
       console.log(lat+","+lng);
       console.log("11");
-      alert("lat lng"+lat+","+lng);
       let location=new google.maps.LatLng(lat,lng);
       this.map.panTo(location);
       loading.dismiss();

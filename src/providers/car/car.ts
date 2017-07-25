@@ -1,3 +1,4 @@
+import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseService } from './../../providers/firebase-service';
 import { SimulateProvider } from './../simulate/simulate';
 import { Observable } from 'rxjs/Rx';
@@ -14,7 +15,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class CarProvider {
   public simulate:SimulateProvider;
-  constructor(public fb:FirebaseService) {
+  constructor(public fb:AngularFireDatabase) {
     console.log('Hello CarProvider Provider');
     this.simulate=new SimulateProvider(this.fb);
   }

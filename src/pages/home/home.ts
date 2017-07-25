@@ -1,8 +1,7 @@
+import { Location } from './../../components/models/location';
 import { MetroService } from './../../services/metroService';
 import { MapDirective } from './../../components/map';
 import { Observable, Subscription } from 'rxjs/Rx';
-import { LocationTracker } from './../../providers/location-tracker/location-tracker';
-import { Location } from './../../models/location';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseService } from './../../providers/firebase-service';
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
@@ -29,7 +28,7 @@ export class HomePage implements OnInit,OnChanges  {
   firestore=firebase.database().ref('/pushtokens');
   firemsg=firebase.database().ref('/messages');
   constructor(public navCtrl: NavController,public loading:LoadingController, public fb:FirebaseService, 
-    private geo:Geolocation,private afDatabase:AngularFireDatabase,public lt:LocationTracker
+    private geo:Geolocation,private afDatabase:AngularFireDatabase
   ,public metro: MetroService) {
     console.log("metro");
     console.log(metro);
@@ -82,7 +81,6 @@ export class HomePage implements OnInit,OnChanges  {
       console.log("sdss");
        console.log(this.afDatabase);
         var that=this.fb;
-        var lt=this.lt;
         var location=this.location;
         var flightPlanCoordinates=[];
         const map = new google.maps.Map(document.getElementById('map'), {
@@ -102,7 +100,6 @@ export class HomePage implements OnInit,OnChanges  {
             var count=0;
 
              setInterval(() =>{
-               lt.startTracking();
                console.log("starting setinterval2");
                count++;
       //         that.object('profile/user_id/'). set({massege:'haha',haha:'ns'})
