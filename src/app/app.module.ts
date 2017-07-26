@@ -29,6 +29,9 @@ import { SimulateProvider } from '../providers/simulate/simulate';
 import { AutoCompleteModule } from 'ionic2-auto-complete';
 import firebase from 'firebase';
 import {Keyboard} from '@ionic-native/keyboard';
+
+import {AutocompletePage} from '../pages/start/autocomplete';
+
   var firebaseConfig = {
      apiKey: "AIzaSyDA8QXihUwFwPuvN2N3Tx44AQQt20wwskk",
     authDomain: "ionic-173108.firebaseapp.com",
@@ -49,7 +52,8 @@ import {Keyboard} from '@ionic-native/keyboard';
     LoginPage,
     ProfilePage,
     SignupPage,
-    StartPage
+    StartPage,
+    AutocompletePage
 
   ],
   imports: [
@@ -72,7 +76,8 @@ import {Keyboard} from '@ionic-native/keyboard';
     LoginPage,
     ProfilePage,
     SignupPage,
-    StartPage
+    StartPage,
+    AutocompletePage
     
     
   ],

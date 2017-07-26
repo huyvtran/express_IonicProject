@@ -37,6 +37,7 @@
         "cordova-plugin-console": "^1.0.5",
         "cordova-plugin-device": "^1.1.4",
         "cordova-plugin-geolocation": "^2.4.3",
+        "cordova-plugin-googleplus": "^5.1.1",
         "cordova-plugin-mauron85-background-geolocation": "^2.2.5",
         "cordova-plugin-nativegeocoder": "^1.0.2",
         "cordova-plugin-splashscreen": "^4.0.3",
@@ -73,7 +74,10 @@
                 "ACCOUNT_TYPE": "$PACKAGE_NAME.account",
                 "CONTENT_AUTHORITY": "$PACKAGE_NAME"
             },
-            "cordova-plugin-nativegeocoder": {}
+            "cordova-plugin-nativegeocoder": {},
+            "cordova-plugin-googleplus": {
+                "REVERSED_CLIENT_ID": "com.googleusercontent.apps.916589339698-n71c3mmpsclus88rk6fp99la7sh0vnga"
+            }
         },
         "platforms": [
             "android"

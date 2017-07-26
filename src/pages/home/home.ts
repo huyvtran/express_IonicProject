@@ -10,6 +10,8 @@ import { NavController, LoadingController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import {Keyboard} from '@ionic-native/keyboard';
 import firebase from 'firebase';
+import {AutocompletePage} from './../start/autocomplete';
+
 declare var google;
 @Component({
   selector: 'page-home',
@@ -37,7 +39,7 @@ export class HomePage implements OnInit,OnChanges  {
    
   }
   entered(){
-     this.navCtrl.push(StartPage)
+     this.navCtrl.push(AutocompletePage)
   }
  
   ionViewDidLoad(){

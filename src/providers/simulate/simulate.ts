@@ -1,4 +1,3 @@
-import { Location } from './../../../../testtest/googleMap/src/models/location';
 import { AngularFireDatabase,    FirebaseListObservable
  } from 'angularfire2/database';
 import { FirebaseService } from './../../providers/firebase-service';
