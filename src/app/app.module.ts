@@ -1,3 +1,7 @@
+import { StartPage } from './../pages/start/start';
+import { SignupPage } from './../pages/signup/signup';
+import { ProfilePage } from './../pages/profile/profile';
+import { LoginPage } from './../pages/login/login';
 import { HttpModule } from '@angular/http';
 import { MetroService } from './../services/metroService';
 import { PickupCar } from './../components/pickup-car/pickup-car';
@@ -14,23 +18,26 @@ import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { PickupDirective} from '../pickup/pickup';
 import { AvailbleCarDirective } from '../components/available-cars/available-cars';
 import { NativeGeocoder,NativeGeocoderReverseResult} from '@ionic-native/native-geocoder';
-
+import { GooglePlus } from '@ionic-native/google-plus';
 import { FormsModule } from '@angular/forms';
-
+import { AngularFireAuth } from 'angularfire2/auth';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { Geolocation } from '@ionic-native/geolocation';
 import { CarProvider } from '../providers/car/car';
 import { SimulateProvider } from '../providers/simulate/simulate';
 import { AutoCompleteModule } from 'ionic2-auto-complete';
- var config = {
-    apiKey: "AIzaSyAfXTGx8Tdyx8y146j83vVtiQPC5T08QUI",
-    authDomain: "pushmessage-2c863.firebaseapp.com",
-    databaseURL: "https://pushmessage-2c863.firebaseio.com",
-    projectId: "pushmessage-2c863",
-    storageBucket: "pushmessage-2c863.appspot.com",
-    messagingSenderId: "416675547990"
+import firebase from 'firebase';
+import {Keyboard} from '@ionic-native/keyboard';
+  var firebaseConfig = {
+     apiKey: "AIzaSyDA8QXihUwFwPuvN2N3Tx44AQQt20wwskk",
+    authDomain: "ionic-173108.firebaseapp.com",
+    databaseURL: "https://ionic-173108.firebaseio.com",
+    projectId: "ionic-173108",
+    storageBucket: "ionic-173108.appspot.com",
+    messagingSenderId: "916589339698"
   };
+  firebase.initializeApp(firebaseConfig);
 @NgModule({
   declarations: [
     MyApp,
@@ -39,13 +46,17 @@ import { AutoCompleteModule } from 'ionic2-auto-complete';
     PickupDirective,
     AvailbleCarDirective,
     PickupCar,
+    LoginPage,
+    ProfilePage,
+    SignupPage,
+    StartPage
 
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireDatabaseModule,
-    AngularFireModule.initializeApp(config),
+    AngularFireModule.initializeApp(firebaseConfig),
     FormsModule,
     AutoCompleteModule,
     HttpModule
@@ -57,7 +68,12 @@ import { AutoCompleteModule } from 'ionic2-auto-complete';
     MapDirective,
     PickupDirective,
     AvailbleCarDirective,
-    PickupCar
+    PickupCar,
+    LoginPage,
+    ProfilePage,
+    SignupPage,
+    StartPage
+    
     
   ],
   providers: [
@@ -70,7 +86,8 @@ import { AutoCompleteModule } from 'ionic2-auto-complete';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CarProvider,
     SimulateProvider,
-    MetroService
+    MetroService,
+    GooglePlus,AngularFireAuth,Keyboard
   ]
 })
 export class AppModule {}

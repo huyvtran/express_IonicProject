@@ -1,3 +1,4 @@
+import { MetroService } from './../../services/metroService';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
@@ -14,7 +15,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class StartPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public metro:MetroService) {
+   // metro.getResults("subway");
   }
 
   ionViewDidLoad() {

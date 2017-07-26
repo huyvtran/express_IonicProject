@@ -10,28 +10,33 @@
 
 </ion-header>
 
-<ion-content  class="home">
+<ion-content scroll="false" class="home">
 
   <div class="upper" id="upper">
-    <ion-row>
-      <ion-col width-50> 
-      <ion-list>
-        <ion-item>
-            <ion-label color="primary" floating>출발역</ion-label>
-            <ion-input [(ngModel)]="start"></ion-input>
-        </ion-item>
+    <ion-row (click)="startingPoint()">
+      <ion-col width-100> 
+      <ion-list >
+       <ion-item>
+        <ion-input placeholder="출발역 입력해주세요" (focus)="entered()"  clearInput></ion-input>
+      </ion-item>
       </ion-list>
       </ion-col>
-
-       <ion-col width-50>
+    </ion-row>
+    <ion-row>
+       <ion-col width-100>
             <ion-list>
-              <ion-item>
+              <!-- <ion-item>
                   <ion-label color="primary" floating>도착역</ion-label>
                    <ion-input [(ngModel)]="destination"></ion-input>
-              </ion-item>
+              </ion-item> -->
+                   <ion-item>
+                    <ion-input placeholder="출발역 입력해주세요" clearInput></ion-input>
+                  </ion-item>
             </ion-list>
        </ion-col>
     </ion-row>
+      
+    
 
     <ion-row>
       <ion-col>

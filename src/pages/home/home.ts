@@ -1,3 +1,4 @@
+import { StartPage } from './../start/start';
 import { Location } from './../../components/models/location';
 import { MetroService } from './../../services/metroService';
 import { MapDirective } from './../../components/map';
@@ -7,6 +8,7 @@ import { FirebaseService } from './../../providers/firebase-service';
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { NavController, LoadingController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
+import {Keyboard} from '@ionic-native/keyboard';
 import firebase from 'firebase';
 declare var google;
 @Component({
@@ -28,14 +30,26 @@ export class HomePage implements OnInit,OnChanges  {
   firestore=firebase.database().ref('/pushtokens');
   firemsg=firebase.database().ref('/messages');
   constructor(public navCtrl: NavController,public loading:LoadingController, public fb:FirebaseService, 
-    private geo:Geolocation,private afDatabase:AngularFireDatabase
+    private geo:Geolocation,private afDatabase:AngularFireDatabase,public keyboard:Keyboard
   ,public metro: MetroService) {
     console.log("metro");
     console.log(metro);
    
   }
+  entered(){
+     this.navCtrl.push(StartPage)
+  }
+ 
   ionViewDidLoad(){
-    
+  //  window.addEventListener('native.keyboardshow', keyboardShowHandler);
+  //   window.addEventListener('native.keyboardhide', keyboardHideHandler);
+
+function keyboardHideHandler(e){
+   alert("hide"+e);
+}
+    function keyboardShowHandler(e){
+      alert("show"+e);
+    }
   }
   
   starting(value){

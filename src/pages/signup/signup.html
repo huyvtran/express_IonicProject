@@ -8,7 +8,8 @@
 
 <ion-content padding>
 
-  <ion-list>
+
+   <ion-list>
     <ion-item>
       <ion-label fixed>Username</ion-label>
       <ion-input type="text" [(ngModel)]="user.email" value=""></ion-input>
@@ -19,9 +20,5 @@
     </ion-item>
   </ion-list>
 
-   <button ion-button icon-left (click)="login(user)"  block outline> <ion-icon name="log-in"></ion-icon>Login</button>
-   <button ion-button block class="marginTop" (click)="signup()"  block outline><ion-icon name="log-out"></ion-icon>SignUp</button>
-
-  <button ion-button icon-left (click)="googleLogin()" block outline> <ion-icon name="logo-googleplus"></ion-icon>G2oogle Login</button>
-
+   <button ion-button block class="marginTop" (click)="register(user)">register</button>
 </ion-content>

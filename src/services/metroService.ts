@@ -14,7 +14,18 @@ export class MetroService implements AutoCompleteService {
   }
   getResults(keyword:string):Observable<any> {
     console.log("keyword 22233: "+keyword);
-    console.log(this.http.get('/assets/metro.json'))
+    alert("s");
+    return this.http.get('/assets/metro.json')
+      .map(
+        result =>
+        {
+          alert(result.json().DATA);
+          console.log(result.json().DATA.filter(item => item.STATION_NM.toLowerCase().startsWith(keyword.toLowerCase()) ))
+          return result.json().DATA
+            .filter(item => item.STATION_NM.toLowerCase().startsWith(keyword.toLowerCase()) )
+        }, err=>{
+          alert("err : "+err);
+        });
     // return this.http.get('/assets/metro.json')
     // .map((response: any) => {
     //     console.log("mock data");
@@ -22,16 +33,7 @@ export class MetroService implements AutoCompleteService {
     //     console.log(response.json().filter(item => item.STATION_NM.charAt(0)));
     //     return response.json();
     // })
-          return this.http.get('/assets/metro.json')
-      .map(
-        result =>
-        {
-          alert("come"+keyword);
-          console.log(result.json().DATA);
-          alert(result.json().DATA.filter(item => item.STATION_NM.toLowerCase().startsWith(keyword.toLowerCase()) ))
-          return result.json().DATA
-            .filter(item => item.STATION_NM.toLowerCase().startsWith(keyword.toLowerCase()) )
-        });
+        
        
   }
  

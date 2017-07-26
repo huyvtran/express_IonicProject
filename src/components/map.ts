@@ -93,19 +93,19 @@ centerLocation(location){
     this.centerLocation(location);
   }
   addMapEventListener(){
-    google.maps.event.addListener(this.map,'dragstart',(event)=>{
-        console.log("addMapEventListener dragging"+event);
-        this.isMapIdle=false;
-    })
-    google.maps.event.addListener(this.map,'idle',(event)=>{
-        console.log("idle"+event);
-        console.log(this.refreshing);
-        if(this.refreshing){
-            this.refreshing=false;
-        }
-        this.isMapIdle=true;
+    // google.maps.event.addListener(this.map,'dragstart',(event)=>{
+    //     console.log("addMapEventListener dragging"+event);
+    //     this.isMapIdle=false;
+    // })
+    // google.maps.event.addListener(this.map,'idle',(event)=>{
+    //     console.log("idle"+event);
+    //     console.log(this.refreshing);
+    //     if(this.refreshing){
+    //         this.refreshing=false;
+    //     }
+    //     this.isMapIdle=true;
       
-    })
+    // })
 
     // google.maps.event.addListener(this.map,'mouseup',(event)=>{
     //     console.log("mouseup????????????"+event.latLng.lat()+","+event.latLng.lng());
