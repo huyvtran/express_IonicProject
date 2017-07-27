@@ -10,8 +10,10 @@ declare var google;
 export class AutocompletePage {
   autocompleteItems;
   autocomplete;
+  loc:any;
   service = new google.maps.places.AutocompleteService();
   location=new google.maps.Geocoder();
+  position:any;
   constructor (public navCtrl: NavController, public viewCtrl: ViewController, private zone: NgZone) {
     this.autocompleteItems = [];
     this.autocomplete = {
@@ -24,19 +26,20 @@ export class AutocompletePage {
   }
 
   chooseItem(item: any) {
-    this.location.geocode({'address': "숭실대학교"}, function(results, status) {
+    var lat;
+    var lng;
+    this.location.geocode({'address': "숭실대학교"}, (results, status)=> {
           if (status === 'OK') {
-              alert(results[0].geometry.location);
+              this.loc=results[0].geometry.location
+              this.viewCtrl.dismiss({loc:item,lat:this.loc.lat(),lng:this.loc.lng()});
+            
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
-    this.viewCtrl.dismiss(item);
   }
 
   updateSearch() {
-      console.log("updateSearch")
-      console.log(this.autocomplete.query);
     if (this.autocomplete.query == '') {
       this.autocompleteItems = [];
       return;

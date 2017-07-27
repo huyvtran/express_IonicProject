@@ -47,7 +47,7 @@
     
   </div>
   <div class="map-wrapper">
-    <map  (drag_second)="drag_second($event)" #map [isPickupRequested]="isPickupRequested"></map>
+    <map  (drag_second)="drag_second($event)" #map [isPickupRequested]="isPickupRequested"  [startLat]="startLat" [startLng]="startLng"></map>
   </div>
   <div class="bottom request-control">
     <ion-row>

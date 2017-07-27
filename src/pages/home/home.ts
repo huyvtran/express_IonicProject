@@ -28,6 +28,8 @@ export class HomePage implements OnInit,OnChanges  {
   start:string;
   address:any;
   destination:string;
+  startLat:any;
+  startLng:any;
   @Input() test:any;
   public isactive:any;
   firestore=firebase.database().ref('/pushtokens');
@@ -50,7 +52,8 @@ export class HomePage implements OnInit,OnChanges  {
      let modal = this.modalCtrl.create(AutocompletePage);
     let me = this;
     modal.onDidDismiss(data => {
-      alert("sss"+data);
+      this.startLat=data.lat;
+      this.startLng=data.lng;
     });
     modal.present();
   }

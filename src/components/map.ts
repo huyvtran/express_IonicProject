@@ -15,9 +15,11 @@ declare var google;
      providers:[CarProvider,PickupDirective]
 })
 export class MapDirective implements OnInit,OnChanges  {
-    @Input() isPickupRequested:boolean;
+    @Input() isPickupRequested:any;
     @Input() startstn:string;
     @Input() endstn:string;
+    @Input() startLng:any;
+    @Input() startLat:any;
     @Output() starting : EventEmitter<any>=new EventEmitter();
     @Output() ending : EventEmitter<any>=new EventEmitter();
     @Output() drag_second : EventEmitter<any>=new EventEmitter();
@@ -29,7 +31,7 @@ export class MapDirective implements OnInit,OnChanges  {
     public full="";
     lat:number;
     lng:number;
-    
+    Marker:any;
     constructor(public loading:LoadingController,public pick:PickupDirective,public geo:Geolocation
   ){
         this.full_address='jsjs';
@@ -43,7 +45,21 @@ export class MapDirective implements OnInit,OnChanges  {
             this.drag_second.next(false);
         }
     }
+
+    createMarker(location){
+         this.Marker=new google.maps.Marker({
+            map : this.map,
+            position:location,
+            icon:'assets/icon/map-marker.png'
+        })
+    }
     ngOnChanges() {
+        if(this.startLat!=undefined||this.startLat!=null){
+            var location={lat:this.startLat,lng:this.startLng};
+            this.centerLocation(location);
+            this.createMarker(location);
+        }
+        console.log("ngChange!!!!!!!in map " +this.startLat+","+this.startLng);
         //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
         //Add 'implements OnChanges' to the class.
         console.log("map changed");
