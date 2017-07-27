@@ -6,7 +6,7 @@ import { Observable, Subscription } from 'rxjs/Rx';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseService } from './../../providers/firebase-service';
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController, NavParams, ModalController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import {Keyboard} from '@ionic-native/keyboard';
 import firebase from 'firebase';
@@ -26,20 +26,33 @@ export class HomePage implements OnInit,OnChanges  {
   geoCode:boolean=false;
   isPickupRequested:boolean=false;
   start:string;
+  address:any;
   destination:string;
   @Input() test:any;
   public isactive:any;
   firestore=firebase.database().ref('/pushtokens');
   firemsg=firebase.database().ref('/messages');
-  constructor(public navCtrl: NavController,public loading:LoadingController, public fb:FirebaseService, 
+  constructor(public navCtrl: NavController,public navParam:NavParams ,public modalCtrl:ModalController, public loading:LoadingController, public fb:FirebaseService, 
     private geo:Geolocation,private afDatabase:AngularFireDatabase,public keyboard:Keyboard
   ,public metro: MetroService) {
-    console.log("metro");
-    console.log(metro);
+    
+    this.address = {
+      place: ''
+    };
+    if(this.navParam.get("location")===null||this.navParam.get("location")==undefined){
+
+    }else{
+      alert(this.navParam.get("location"))
+    }
    
   }
   entered(){
-     this.navCtrl.push(AutocompletePage)
+     let modal = this.modalCtrl.create(AutocompletePage);
+    let me = this;
+    modal.onDidDismiss(data => {
+      alert("sss"+data);
+    });
+    modal.present();
   }
  
   ionViewDidLoad(){

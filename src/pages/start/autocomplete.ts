@@ -1,6 +1,7 @@
+import { HomePage } from './../home/home';
 import { Component,Output } from '@angular/core';
 import { NgZone  } from '@angular/core';
-import {ViewController} from 'ionic-angular';
+import { ViewController, NavController } from 'ionic-angular';
 declare var google;
 @Component({
   templateUrl: 'autocomplete.html'
@@ -11,18 +12,19 @@ export class AutocompletePage {
   autocomplete;
   service = new google.maps.places.AutocompleteService();
 
-  constructor (public viewCtrl: ViewController, private zone: NgZone) {
+  constructor (public navCtrl: NavController, public viewCtrl: ViewController, private zone: NgZone) {
     this.autocompleteItems = [];
     this.autocomplete = {
       query: ''
     };
   }
-
+  
   dismiss() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss({location:'haha'});
   }
 
   chooseItem(item: any) {
+    alert(item);
     this.viewCtrl.dismiss(item);
   }
 
