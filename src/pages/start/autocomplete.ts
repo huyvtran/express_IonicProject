@@ -11,7 +11,7 @@ export class AutocompletePage {
   autocompleteItems;
   autocomplete;
   service = new google.maps.places.AutocompleteService();
-
+  location=new google.maps.Geocoder();
   constructor (public navCtrl: NavController, public viewCtrl: ViewController, private zone: NgZone) {
     this.autocompleteItems = [];
     this.autocomplete = {
@@ -24,7 +24,13 @@ export class AutocompletePage {
   }
 
   chooseItem(item: any) {
-    alert(item);
+    this.location.geocode({'address': "숭실대학교"}, function(results, status) {
+          if (status === 'OK') {
+              alert(results[0].geometry.location);
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
     this.viewCtrl.dismiss(item);
   }
 
