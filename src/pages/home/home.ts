@@ -46,32 +46,33 @@ export class HomePage implements OnInit,OnChanges  {
     this.address = {
       place: ''
     };
-    if(this.navParam.get("location")===null||this.navParam.get("location")==undefined){
-
-    }else{
-      alert(this.navParam.get("location"))
-    }
+   
    
   }
   endingPoint(){
      let modal = this.modalCtrl.create(EndPage);
     let me = this;
     modal.onDidDismiss(data => {
-      this.endPoint=data.endloc;
+      if(data!=null){
+        this.endPoint=data.endloc;
       this.endLat=data.endlat;
       this.endLng=data.endlng;
+      }
+      
     });
     modal.present();
   }
   entered(){
     
-    
      let modal = this.modalCtrl.create(AutocompletePage);
     let me = this;
     modal.onDidDismiss(data => {
-      this.startPoint=data.loc;
+      if(data!=null){
+        this.startPoint=data.loc;
       this.startLat=data.lat;
       this.startLng=data.lng;
+      }
+      
     });
     modal.present();
   }
@@ -80,12 +81,7 @@ export class HomePage implements OnInit,OnChanges  {
   //  window.addEventListener('native.keyboardshow', keyboardShowHandler);
   //   window.addEventListener('native.keyboardhide', keyboardHideHandler);
 
-function keyboardHideHandler(e){
-   alert("hide"+e);
-}
-    function keyboardShowHandler(e){
-      alert("show"+e);
-    }
+
   }
   
   starting(value){
@@ -94,6 +90,12 @@ function keyboardHideHandler(e){
   }
   ending(value){
     this.destination=value;
+  }
+  requesting(){
+    if(this.startPoint==undefined||this.endPoint==undefined){
+      alert("출발역, 도착역을 입력해주세요")
+    }
+   
   }
   drag_second(trigger){
         console.log("dragged222222"+trigger);

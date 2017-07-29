@@ -18,7 +18,12 @@
       <ion-input type="password" [(ngModel)]="user.password"></ion-input>
     </ion-item>
   </ion-list>
-
+  <div id="sign-in-button" class="sign-in-button"></div>
+  <div *ngIf="windowRef.confirmationResult">
+    <label for="code"> enter code here</label>
+    <input type="text" name="code" [(ngModel)]="verificationCode">
+    <button (click)="verifyLoginCode()"> Verify </button>
+  </div>
    <button ion-button icon-left (click)="login(user)"  block outline> <ion-icon name="log-in"></ion-icon>Login</button>
    <button ion-button block class="marginTop" (click)="signup()"  block outline><ion-icon name="log-out"></ion-icon>SignUp</button>
 

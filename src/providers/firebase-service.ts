@@ -23,8 +23,11 @@ export class FirebaseService{
     //     }) 
     // })
     addLocation(){
-        console.log("???????");
+      
+
+
     }
+   
     getShoppingItems(){
         console.log(this.item=this.afd.list('/profile/user_id'));
         this.item=this.afd.list('/profile/user_id');

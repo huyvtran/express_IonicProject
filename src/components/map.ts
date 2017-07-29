@@ -98,7 +98,6 @@ export class MapDirective implements OnInit,OnChanges  {
         }
 
         if(this.endLat!=undefined||this.endLat!=null){
-            alert("end");
             var location={lat:this.endLat,lng:this.endLng};
             this.centerLocation(location);
             this.createMarkerForEnd(location);

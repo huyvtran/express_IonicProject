@@ -35,10 +35,10 @@ export class EndPage {
   chooseItem(item: any) {
     var lat;
     var lng;
-    this.location.geocode({'address': item}, (results, status)=> {
+    this.location.geocode({'address': item.short}, (results, status)=> {
           if (status === 'OK') {
               this.loc=results[0].geometry.location
-              this.viewCtrl.dismiss({endloc:item,endlat:this.loc.lat(),endlng:this.loc.lng()});
+              this.viewCtrl.dismiss({endloc:item.short,endlat:this.loc.lat(),endlng:this.loc.lng(),long:item.long});
             
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
@@ -61,7 +61,7 @@ export class EndPage {
         if(predictions!=null){
           predictions.forEach(function (prediction) {
           
-          me.autocompleteItems.push(prediction.description.substring(10));
+          me.autocompleteItems.push({short:prediction.description.substring(10), long:prediction.description});
         });
         }else{
           console.log("prediction == null"+predictions);

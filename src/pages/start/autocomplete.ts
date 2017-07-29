@@ -22,16 +22,15 @@ export class AutocompletePage {
   }
   
   dismiss() {
-    this.viewCtrl.dismiss({location:'haha'});
   }
 
   chooseItem(item: any) {
     var lat;
     var lng;
-    this.location.geocode({'address': item}, (results, status)=> {
+    this.location.geocode({'address': item.short}, (results, status)=> {
           if (status === 'OK') {
               this.loc=results[0].geometry.location
-              this.viewCtrl.dismiss({loc:item,lat:this.loc.lat(),lng:this.loc.lng()});
+              this.viewCtrl.dismiss({loc:item.short,lat:this.loc.lat(),lng:this.loc.lng(),long:item.long});
             
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
@@ -54,7 +53,7 @@ export class AutocompletePage {
         if(predictions!=null){
           predictions.forEach(function (prediction) {
           
-          me.autocompleteItems.push(prediction.description.substring(10));
+          me.autocompleteItems.push({short:prediction.description.substring(10), long:prediction.description});
         });
         }else{
           console.log("prediction == null"+predictions);

@@ -40,7 +40,7 @@
 
     <ion-row>
       <ion-col>
-        <button  ion-button block color="dark" (click)="map.getGeoCoding()"  >Request PickUp</button>
+        <button  ion-button block color="dark" (click)="requesting()"  >신청하기</button>
           {{start}}   {{destination}}
       </ion-col>
     </ion-row>
@@ -77,3 +77,30 @@
     
   </div>
 </ion-content>
+
+
+<ion-menu [content]="content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <button ion-item >
+        Home
+      </button>
+      <button ion-item>
+        Friends
+      </button>
+      <button ion-item >
+        Events
+      </button>
+      <button ion-item >
+        Close Menu
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-nav id="nav" #content [root]="rootPage"></ion-nav>
