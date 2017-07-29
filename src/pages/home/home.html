@@ -13,16 +13,16 @@
 <ion-content scroll="false" class="home">
 
   <div class="upper" id="upper">
-    <ion-row (click)="startingPoint()">
+    <ion-row >
       <ion-col width-100> 
       <ion-list >
        <ion-item>
-        <ion-input placeholder="출발역 입력해주세요" (focus)="entered()"  clearInput></ion-input>
+        <ion-input placeholder="출발역 입력해주세요" (focus)="entered()" [(ngModel)]="startPoint" clearInput>{{startPoint}}</ion-input>
       </ion-item>
       </ion-list>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row (click)="endingPoint()"> 
        <ion-col width-100>
             <ion-list>
               <!-- <ion-item>
@@ -30,7 +30,7 @@
                    <ion-input [(ngModel)]="destination"></ion-input>
               </ion-item> -->
                    <ion-item>
-                    <ion-input placeholder="출발역 입력해주세요" clearInput></ion-input>
+                    <ion-input placeholder="도착역 입력해주세요"  [(ngModel)]="endPoint" (focus)="endingPoint()"  clearInput>{{endPoint}}</ion-input>
                   </ion-item>
             </ion-list>
        </ion-col>
@@ -47,7 +47,7 @@
     
   </div>
   <div class="map-wrapper">
-    <map  (drag_second)="drag_second($event)" #map [isPickupRequested]="isPickupRequested"  [startLat]="startLat" [startLng]="startLng"></map>
+    <map  (drag_second)="drag_second($event)" #map [isPickupRequested]="isPickupRequested"  [startLat]="startLat" [startLng]="startLng" [endLat]="endLat" [endLng]="endLng"></map>
   </div>
   <div class="bottom request-control">
     <ion-row>

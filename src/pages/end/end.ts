@@ -3,11 +3,18 @@ import { Component,Output } from '@angular/core';
 import { NgZone  } from '@angular/core';
 import { ViewController, NavController } from 'ionic-angular';
 declare var google;
+/**
+ * Generated class for the EndPage page.
+ *
+ * See http://ionicframework.com/docs/components/#navigation for more info
+ * on Ionic pages and navigation.
+ */
 @Component({
-  templateUrl: 'autocomplete.html'
+  selector: 'page-end',
+  templateUrl: 'end.html',
 })
+export class EndPage {
 
-export class AutocompletePage {
   autocompleteItems;
   autocomplete;
   loc:any;
@@ -31,7 +38,7 @@ export class AutocompletePage {
     this.location.geocode({'address': item}, (results, status)=> {
           if (status === 'OK') {
               this.loc=results[0].geometry.location
-              this.viewCtrl.dismiss({loc:item,lat:this.loc.lat(),lng:this.loc.lng()});
+              this.viewCtrl.dismiss({endloc:item,endlat:this.loc.lat(),endlng:this.loc.lng()});
             
           } else {
             alert('Geocode was not successful for the following reason: ' + status);

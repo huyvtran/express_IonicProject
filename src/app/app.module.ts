@@ -1,3 +1,4 @@
+import { EndPage } from './../pages/end/end';
 import { StartPage } from './../pages/start/start';
 import { SignupPage } from './../pages/signup/signup';
 import { ProfilePage } from './../pages/profile/profile';
@@ -53,7 +54,8 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     ProfilePage,
     SignupPage,
     StartPage,
-    AutocompletePage
+    AutocompletePage,
+    EndPage,
 
   ],
   imports: [
@@ -77,7 +79,8 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     ProfilePage,
     SignupPage,
     StartPage,
-    AutocompletePage
+    AutocompletePage,
+    EndPage
     
     
   ],
@@ -92,7 +95,7 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     CarProvider,
     SimulateProvider,
     MetroService,
-    GooglePlus,AngularFireAuth,Keyboard
+    GooglePlus,AngularFireAuth,Keyboard,MapDirective,PickupDirective
   ]
 })
 export class AppModule {}

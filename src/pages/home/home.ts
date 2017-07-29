@@ -1,3 +1,4 @@
+import { EndPage } from './../end/end';
 import { StartPage } from './../start/start';
 import { Location } from './../../components/models/location';
 import { MetroService } from './../../services/metroService';
@@ -30,11 +31,15 @@ export class HomePage implements OnInit,OnChanges  {
   destination:string;
   startLat:any;
   startLng:any;
+  endLat:any;
+  endLng:any;
+  startPoint:string;
   @Input() test:any;
   public isactive:any;
+  endPoint:string;
   firestore=firebase.database().ref('/pushtokens');
   firemsg=firebase.database().ref('/messages');
-  constructor(public navCtrl: NavController,public navParam:NavParams ,public modalCtrl:ModalController, public loading:LoadingController, public fb:FirebaseService, 
+  constructor(public navCtrl: NavController,public navParam:NavParams ,public mapDirective:MapDirective, public modalCtrl:ModalController, public loading:LoadingController, public fb:FirebaseService, 
     private geo:Geolocation,private afDatabase:AngularFireDatabase,public keyboard:Keyboard
   ,public metro: MetroService) {
     
@@ -48,10 +53,23 @@ export class HomePage implements OnInit,OnChanges  {
     }
    
   }
+  endingPoint(){
+     let modal = this.modalCtrl.create(EndPage);
+    let me = this;
+    modal.onDidDismiss(data => {
+      this.endPoint=data.endloc;
+      this.endLat=data.endlat;
+      this.endLng=data.endlng;
+    });
+    modal.present();
+  }
   entered(){
+    
+    
      let modal = this.modalCtrl.create(AutocompletePage);
     let me = this;
     modal.onDidDismiss(data => {
+      this.startPoint=data.loc;
       this.startLat=data.lat;
       this.startLng=data.lng;
     });

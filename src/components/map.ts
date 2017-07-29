@@ -20,6 +20,8 @@ export class MapDirective implements OnInit,OnChanges  {
     @Input() endstn:string;
     @Input() startLng:any;
     @Input() startLat:any;
+    @Input() endLng:any;
+    @Input() endLat:any;
     @Output() starting : EventEmitter<any>=new EventEmitter();
     @Output() ending : EventEmitter<any>=new EventEmitter();
     @Output() drag_second : EventEmitter<any>=new EventEmitter();
@@ -32,6 +34,8 @@ export class MapDirective implements OnInit,OnChanges  {
     lat:number;
     lng:number;
     Marker:any;
+     markerStart=[];
+     markerEnd=[];
     constructor(public loading:LoadingController,public pick:PickupDirective,public geo:Geolocation
   ){
         this.full_address='jsjs';
@@ -45,20 +49,63 @@ export class MapDirective implements OnInit,OnChanges  {
             this.drag_second.next(false);
         }
     }
-
-    createMarker(location){
+    
+    createMarkerForStart(location){
          this.Marker=new google.maps.Marker({
             map : this.map,
             position:location,
             icon:'assets/icon/map-marker.png'
         })
+        this.markerStart.push(this.Marker)
+        if(this.markerStart.length>1){
+            for(var i=0; i<this.markerStart.length; i++){
+
+                if(this.markerStart.length-1==i){
+
+                }else{
+                    this.markerStart[i].setMap(null);
+                }
+            }
+        }
+    }
+    createMarkerForEnd(location){
+         this.Marker=new google.maps.Marker({
+            map : this.map,
+            position:location,
+            icon:'assets/icon/map-marker.png'
+        })
+        this.markerEnd.push(this.Marker)
+        console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+        console.log(this.markerEnd);
+        if(this.markerEnd.length>1){
+            for(var i=0; i<this.markerEnd.length; i++){
+
+                if(this.markerEnd.length-1==i){
+
+                }else{
+                    this.markerEnd[i].setMap(null);
+                }
+            }
+        }
     }
     ngOnChanges() {
         if(this.startLat!=undefined||this.startLat!=null){
             var location={lat:this.startLat,lng:this.startLng};
             this.centerLocation(location);
-            this.createMarker(location);
+            this.createMarkerForStart(location);
+            this.startLat=null;
+            this.startLng=null;
         }
+
+        if(this.endLat!=undefined||this.endLat!=null){
+            alert("end");
+            var location={lat:this.endLat,lng:this.endLng};
+            this.centerLocation(location);
+            this.createMarkerForEnd(location);
+            this.endLat=null;
+            this.endLng=null;
+        }
+
         console.log("ngChange!!!!!!!in map " +this.startLat+","+this.startLng);
         //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
         //Add 'implements OnChanges' to the class.
