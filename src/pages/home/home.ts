@@ -1,4 +1,5 @@
 import { ViewRequestListPage } from './../view-request-list/view-request-list';
+import { ViewRequestedAllPage } from './../view-requested-all/view-requested-all';
 import { request } from './../../components/models/request';
 import { LoginPage } from './../login/login';
 import { EndPage } from './../end/end';
@@ -51,27 +52,8 @@ export class HomePage implements OnInit,OnChanges  {
     private geo:Geolocation,private afDatabase:AngularFireDatabase,public afAuth : AngularFireAuth
   ,public metro: MetroService,private oneSignal: OneSignal) {
 
-
-
-var notificationOpenedCallback = function(jsonData) {
-    console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
-  };
-
-  window["plugins"].OneSignal
-    .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
-  	.handleNotificationOpened(notificationOpenedCallback)
-    .endInit();
-    var notificationObj = { contents: {en: "message body"},
-                          include_player_ids: ['1d8a2c4b-3a87-4ca0-9d1d-0797f54ca802']};
-    window["plugins"].OneSignal.postNotification(notificationObj,
-    function(successResponse) {
-      alert(successResponse);
-    },
-    function (failedResponse) {
-      console.log("Notification Post Failed: ", failedResponse);
-      alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
-    }
-  );
+    localStorage.setItem("lastname", "Smith");
+    alert(localStorage.getItem("lastname"));
     this.pages=[
         
         {title:'page 2',component:HomePage},
@@ -84,6 +66,9 @@ var notificationOpenedCallback = function(jsonData) {
     };
    
    
+  }
+  viewRequestedAll(){
+    this.navCtrl.push(ViewRequestedAllPage)
   }
    openPage(page){
     this.navCtrl.setRoot(page.component);
@@ -138,6 +123,11 @@ var notificationOpenedCallback = function(jsonData) {
     if(this.startPoint==undefined||this.endPoint==undefined){
       alert("출발역, 도착역을 입력해주세요")
     }else{
+      
+var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(this.startLat, this.startLng),
+ new google.maps.LatLng(this.endLat, this.endLng));       
+      distance=(parseInt(distance)/1000);
+      
       this.request.startPoint=this.startPoint;
       this.request.endPoint=this.endPoint;
       let today = new Date();
@@ -158,13 +148,16 @@ var notificationOpenedCallback = function(jsonData) {
   console.log(today_today);
       this.request.user="kotran"
       this.request.create_date=today_today;
-      this.afDatabase.list('/requestedList/kotran').push(this.request).then((success)=>{
+      this.request.status="requested";
+      this.afDatabase.list('/requestedList/requested').push(this.request).then((success)=>{
         this.afAuth.authState.subscribe(auth=>{
-          alert(auth.uid);
+          if(auth!=null||auth!=undefined){
           this.afDatabase.list('/profile/'+auth.uid+'/request').push(this.request).then((success)=>{
           }).catch((error)=>{
             alert(error);
           })
+          }
+          
         })
       }).catch((error)=>{
         alert(error);

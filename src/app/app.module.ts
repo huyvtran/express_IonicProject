@@ -1,4 +1,6 @@
 import { ViewRequestListPage } from './../pages/view-request-list/view-request-list';
+import { ViewRequestedAllPage } from './../pages/view-requested-all/view-requested-all';
+
 import { WindowPage } from './../pages/window/window';
 import { EndPage } from './../pages/end/end';
 import { StartPage } from './../pages/start/start';
@@ -60,7 +62,8 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     StartPage,
     AutocompletePage,
     EndPage,
-    ViewRequestListPage
+    ViewRequestListPage,
+    ViewRequestedAllPage
 
   ],
   imports: [
@@ -86,7 +89,8 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     StartPage,
     AutocompletePage,
     EndPage,
-    ViewRequestListPage
+    ViewRequestListPage,
+    ViewRequestedAllPage
     
     
   ],

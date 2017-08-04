@@ -54,8 +54,9 @@ export class MapDirective implements OnInit,OnChanges  {
          this.Marker=new google.maps.Marker({
             map : this.map,
             position:location,
-            icon:'assets/icon/map-marker.png'
+            icon:'assets/icon/start.png'
         })
+        alert(location.lat+","+location.lng);
         this.markerStart.push(this.Marker)
         if(this.markerStart.length>1){
             for(var i=0; i<this.markerStart.length; i++){
@@ -72,16 +73,31 @@ export class MapDirective implements OnInit,OnChanges  {
          this.Marker=new google.maps.Marker({
             map : this.map,
             position:location,
-            icon:'assets/icon/map-marker.png'
+            icon:'assets/icon/end.png'
         })
+        var flightPlanCoordinates=[
+             {lat:  37.478898852648925, lng: 127.05001801602016},
+          {lat:  37.47854141742287, lng: 127.04825311452312},
+          {lat:  37.478895414589296, lng: 127.0502639543466},
+          {lat:  37.47890077067915, lng: 127.05022291557128}
+        ];
         this.markerEnd.push(this.Marker)
+        var flightPath = new google.maps.Polyline({
+                    path: flightPlanCoordinates,
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                    });
+                    flightPath.setMap(this.map);
         console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+              
         console.log(this.markerEnd);
         if(this.markerEnd.length>1){
             for(var i=0; i<this.markerEnd.length; i++){
 
                 if(this.markerEnd.length-1==i){
-
+                    
                 }else{
                     this.markerEnd[i].setMap(null);
                 }
@@ -191,6 +207,23 @@ centerLocation(location){
         let map=new google.maps.Map(mapEl,mapOptions);
         console.log("this is map");
         console.log(map);
+        var flightPlanCoordinates = [
+          {lat: 37.772, lng: -122.214},
+          {lat: 21.291, lng: -157.821},
+          {lat: -18.142, lng: 178.431},
+          {lat: -27.467, lng: 153.027}
+        ];
+        var flightPath = new google.maps.Polyline({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        flightPath.setMap(map);
+        console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+           
         return map;
     }
       getCurrentLocation2(){

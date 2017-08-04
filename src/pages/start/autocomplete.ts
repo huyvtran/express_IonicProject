@@ -52,7 +52,6 @@ export class AutocompletePage {
       me.zone.run(function () {
         if(predictions!=null){
           predictions.forEach(function (prediction) {
-          
           me.autocompleteItems.push({short:prediction.description.substring(10), long:prediction.description});
         });
         }else{

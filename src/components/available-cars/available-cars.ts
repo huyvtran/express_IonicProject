@@ -96,7 +96,7 @@ export class AvailbleCarDirective implements OnInit  {
         })
         google.maps.event.addListenerOnce(popup, 'domready', () => {
             document.getElementById('myid').addEventListener('click', () => {
-                this.dialog.confirm("배달 신청하시겠습니까?", "확인",).then((y)=>console.log("yessss"+y)).catch((n)=>console.log("nooo"+n))
+                this.dialog.confirm("배달 신청하시겠습니까?", "확인").then((y)=>console.log("yessss"+y)).catch((n)=>console.log("nooo"+n))
                 
             });
         });
