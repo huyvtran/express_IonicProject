@@ -55,7 +55,7 @@ export class FirebaseService{
         var array_value=[];
 
         console.log("getLocation")
-        this.item=this.afd.list('/loc', { preserveSnapshot: true });
+        this.item=this.afd.list('/Available/', { preserveSnapshot: true });
         this.item
             .subscribe(snapshots => {
                 console.log("getLocation222")

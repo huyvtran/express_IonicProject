@@ -1,3 +1,6 @@
+import { ViewRequestListPage } from './../view-request-list/view-request-list';
+import { request } from './../../components/models/request';
+import { LoginPage } from './../login/login';
 import { EndPage } from './../end/end';
 import { StartPage } from './../start/start';
 import { Location } from './../../components/models/location';
@@ -12,6 +15,8 @@ import { Geolocation } from '@ionic-native/geolocation';
 import {Keyboard} from '@ionic-native/keyboard';
 import firebase from 'firebase';
 import {AutocompletePage} from './../start/autocomplete';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { OneSignal } from '@ionic-native/onesignal';
 
 declare var google;
 @Component({
@@ -22,6 +27,7 @@ declare var google;
 
 export class HomePage implements OnInit,OnChanges  {
   location={} as Location
+  request={} as request
   Destination:string;
   MyLocation:any;
   geoCode:boolean=false;
@@ -33,21 +39,58 @@ export class HomePage implements OnInit,OnChanges  {
   startLng:any;
   endLat:any;
   endLng:any;
+  activePage:any;
   startPoint:string;
   @Input() test:any;
   public isactive:any;
   endPoint:string;
+  pages: Array<{title:string,component:any}>;
   firestore=firebase.database().ref('/pushtokens');
   firemsg=firebase.database().ref('/messages');
   constructor(public navCtrl: NavController,public navParam:NavParams ,public mapDirective:MapDirective, public modalCtrl:ModalController, public loading:LoadingController, public fb:FirebaseService, 
-    private geo:Geolocation,private afDatabase:AngularFireDatabase,public keyboard:Keyboard
-  ,public metro: MetroService) {
-    
+    private geo:Geolocation,private afDatabase:AngularFireDatabase,public afAuth : AngularFireAuth
+  ,public metro: MetroService,private oneSignal: OneSignal) {
+
+
+
+var notificationOpenedCallback = function(jsonData) {
+    console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+  };
+
+  window["plugins"].OneSignal
+    .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
+  	.handleNotificationOpened(notificationOpenedCallback)
+    .endInit();
+    var notificationObj = { contents: {en: "message body"},
+                          include_player_ids: ['1d8a2c4b-3a87-4ca0-9d1d-0797f54ca802']};
+    window["plugins"].OneSignal.postNotification(notificationObj,
+    function(successResponse) {
+      alert(successResponse);
+    },
+    function (failedResponse) {
+      console.log("Notification Post Failed: ", failedResponse);
+      alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
+    }
+  );
+    this.pages=[
+        
+        {title:'page 2',component:HomePage},
+        {title:'Log in',component:LoginPage},
+        {title:'View Request List',component:ViewRequestListPage}
+      ]
+      this.activePage=this.pages[0];
     this.address = {
       place: ''
     };
    
    
+  }
+   openPage(page){
+    this.navCtrl.setRoot(page.component);
+    this.activePage=page;
+  }
+  checkActive(page){
+    return page==this.activePage;
   }
   endingPoint(){
      let modal = this.modalCtrl.create(EndPage);
@@ -94,19 +137,52 @@ export class HomePage implements OnInit,OnChanges  {
   requesting(){
     if(this.startPoint==undefined||this.endPoint==undefined){
       alert("출발역, 도착역을 입력해주세요")
+    }else{
+      this.request.startPoint=this.startPoint;
+      this.request.endPoint=this.endPoint;
+      let today = new Date();
+        let dd:number;
+        let day:string;
+        let month:string;
+         dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+
+        var yyyy = today.getFullYear();
+       var time=new Date().toLocaleTimeString('en-US', { hour12: false,hour: "numeric",minute: "numeric"});
+       console.log("time:"+time);
+       
+        dd<10?day='0'+dd:day=''+dd;
+        mm<10?month='0'+mm:month=''+mm;
+        
+	    let today_today = yyyy+'/'+month+'/'+day+' '+time;
+  console.log(today_today);
+      this.request.user="kotran"
+      this.request.create_date=today_today;
+      this.afDatabase.list('/requestedList/kotran').push(this.request).then((success)=>{
+        this.afAuth.authState.subscribe(auth=>{
+          alert(auth.uid);
+          this.afDatabase.list('/profile/'+auth.uid+'/request').push(this.request).then((success)=>{
+          }).catch((error)=>{
+            alert(error);
+          })
+        })
+      }).catch((error)=>{
+        alert(error);
+      })
     }
    
   }
   drag_second(trigger){
-        console.log("dragged222222"+trigger);
         var upper=document.getElementById("upper");
         console.log(upper);
         if(trigger){
 
-        upper.setAttribute('class','upper isactive');
+        // upper.setAttribute('class','upper isactive');
+        console.log("trigger true")
         }else{
-          upper.removeAttribute('class');
-          upper.setAttribute('class','upper');
+          // upper.removeAttribute('class');
+          // upper.setAttribute('class','upper');
+          console.log("trigger false")
         }
     }
   ngOnChanges() {

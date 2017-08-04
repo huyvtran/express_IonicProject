@@ -25,13 +25,13 @@ export class SimulateProvider {
     this.cars_array=[];
     this.activeUserLocation=[];
     this.directionsService=new google.maps.DirectionsService();
-    this.items = this.afd.list('/loc', { preserveSnapshot: true });
+    this.items = this.afd.list('/employees_status/Available/', { preserveSnapshot: true });
     console.log('Hello SimulateProvider Provider');
     console.log(this.items);
     console.log("this.item");
     console.log(this.cars[0].cars[0].coord);
     this.items.subscribe(snapshots=>{
-        console.log("snapshot");
+        console.log("snapshot!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         console.log(snapshots);
         snapshots.forEach(element => {
           console.log(element.key);

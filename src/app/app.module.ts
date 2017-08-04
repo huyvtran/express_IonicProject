@@ -1,3 +1,4 @@
+import { ViewRequestListPage } from './../pages/view-request-list/view-request-list';
 import { WindowPage } from './../pages/window/window';
 import { EndPage } from './../pages/end/end';
 import { StartPage } from './../pages/start/start';
@@ -31,6 +32,8 @@ import { SimulateProvider } from '../providers/simulate/simulate';
 import { AutoCompleteModule } from 'ionic2-auto-complete';
 import firebase from 'firebase';
 import {Keyboard} from '@ionic-native/keyboard';
+import { Dialogs } from '@ionic-native/dialogs';
+import { OneSignal } from '@ionic-native/onesignal';
 
 import {AutocompletePage} from '../pages/start/autocomplete';
 
@@ -57,6 +60,7 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     StartPage,
     AutocompletePage,
     EndPage,
+    ViewRequestListPage
 
   ],
   imports: [
@@ -81,7 +85,8 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     SignupPage,
     StartPage,
     AutocompletePage,
-    EndPage
+    EndPage,
+    ViewRequestListPage
     
     
   ],
@@ -90,8 +95,11 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     BackgroundGeolocation,
     SplashScreen,
     NativeGeocoder,
+    Dialogs,
     Geolocation,FirebaseService,
     AngularFireModule,
+    OneSignal,
+    
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CarProvider,
     SimulateProvider,

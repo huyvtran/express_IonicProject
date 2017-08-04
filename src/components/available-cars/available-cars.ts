@@ -1,6 +1,7 @@
 import { CarProvider } from './../../providers/car/car';
 import { Component ,Input,OnInit} from '@angular/core';
 import * as SlidingMarker from 'marker-animate-unobtrusive';
+import { Dialogs } from '@ionic-native/dialogs';
 
 declare var google;
 
@@ -19,7 +20,7 @@ export class AvailbleCarDirective implements OnInit  {
         //Add 'implements OnInit' to the class.
         this.fetchAndRefreshCars();
     }
-    constructor(public carService:CarProvider){
+    constructor(public carService:CarProvider, private dialog:Dialogs){
         this.carMarkers=[];
     }
     deleteCarMarker(){
@@ -71,6 +72,7 @@ export class AvailbleCarDirective implements OnInit  {
         
         this.addCarMarker(car);
     }
+  
     addCarMarker(car){
        
         
@@ -87,13 +89,17 @@ export class AvailbleCarDirective implements OnInit  {
         carMarker.set('created_date',car.created_date);
         carMarker.set('isactive',car.isactive);
         let popup=new google.maps.InfoWindow({
-            content:'<h5>'+car.userid+'</h5>\n<h5>'+car.created_date+'</h5>'
+            content:'<h5>'+car.userid+'</h5>\n<h5>'+car.created_date+'</h5>'+'<button id="myid">신청</button>'
         });
         carMarker.addListener('click',()=>{
               popup.open(this.map,carMarker);
-              alert(car.userid);
         })
-        
+        google.maps.event.addListenerOnce(popup, 'domready', () => {
+            document.getElementById('myid').addEventListener('click', () => {
+                this.dialog.confirm("배달 신청하시겠습니까?", "확인",).then((y)=>console.log("yessss"+y)).catch((n)=>console.log("nooo"+n))
+                
+            });
+        });
         this.carMarkers.push(carMarker);
         console.log("add car marker");
         console.log(this.carMarkers);
