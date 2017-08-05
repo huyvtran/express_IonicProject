@@ -45,15 +45,48 @@ export class HomePage implements OnInit,OnChanges  {
   @Input() test:any;
   public isactive:any;
   endPoint:string;
+  items:any;
   pages: Array<{title:string,component:any}>;
+  requestedRoute=[];
   firestore=firebase.database().ref('/pushtokens');
   firemsg=firebase.database().ref('/messages');
   constructor(public navCtrl: NavController,public navParam:NavParams ,public mapDirective:MapDirective, public modalCtrl:ModalController, public loading:LoadingController, public fb:FirebaseService, 
     private geo:Geolocation,private afDatabase:AngularFireDatabase,public afAuth : AngularFireAuth
   ,public metro: MetroService,private oneSignal: OneSignal) {
 
-    localStorage.setItem("lastname", "Smith");
-    alert(localStorage.getItem("lastname"));
+ this.items=this.afDatabase.list('/requestedList/requested', { preserveSnapshot: true })
+       this.items.subscribe(snapshots=>{
+        console.log("snapshot????????????????????????????")
+        console.log(snapshots);
+        snapshots.forEach(element => {
+          console.log(element.key);
+          console.log(element.val().startLat);
+          this.requestedRoute.push({lat:element.val().startLat,lng:element.val().startLng},{lat:element.val().endLat,lng:element.val().endLng})
+          console.log(this.requestedRoute);
+        });
+    })
+
+// var notificationOpenedCallback = function(jsonData) {
+//     console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+//   };
+
+//   window["plugins"].OneSignal
+//     .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
+//   	.handleNotificationOpened(notificationOpenedCallback)
+//     .endInit();
+//     var notificationObj = { contents: {en: "message body"},
+//                           include_player_ids: ['1d8a2c4b-3a87-4ca0-9d1d-0797f54ca802']};
+//     window["plugins"].OneSignal.postNotification(notificationObj,
+//     function(successResponse) {
+//       alert(successResponse);
+//     },
+//     function (failedResponse) {
+//       console.log("Notification Post Failed: ", failedResponse);
+//       alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
+//     }
+//   );
+    // localStorage.setItem("lastname", "Smith");
+    // alert(localStorage.getItem("lastname"));
     this.pages=[
         
         {title:'page 2',component:HomePage},
@@ -149,6 +182,10 @@ var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.
       this.request.user="kotran"
       this.request.create_date=today_today;
       this.request.status="requested";
+      this.request.startLat=this.startLat;
+      this.request.startLng=this.startLng;
+      this.request.endLat=this.endLat;
+      this.request.endLng=this.endLng;
       this.afDatabase.list('/requestedList/requested').push(this.request).then((success)=>{
         this.afAuth.authState.subscribe(auth=>{
           if(auth!=null||auth!=undefined){

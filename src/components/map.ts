@@ -1,3 +1,4 @@
+import { AngularFireDatabase } from 'angularfire2/database';
 import { PickupCar } from './pickup-car/pickup-car';
 import { CarProvider } from './../providers/car/car';
 import { PickupDirective } from './../pickup/pickup';
@@ -29,17 +30,82 @@ export class MapDirective implements OnInit,OnChanges  {
     public map:any;
     public isMapIdle:boolean;
     public currentLocation:any;
-    full_address:string = "hahaha"
     public full="";
     lat:number;
     lng:number;
+    requestedRoute=[];
+      items:any;
     Marker:any;
      markerStart=[];
      markerEnd=[];
-    constructor(public loading:LoadingController,public pick:PickupDirective,public geo:Geolocation
+    constructor(public loading:LoadingController,public pick:PickupDirective,public geo:Geolocation,public afDatabase:AngularFireDatabase
   ){
-        this.full_address='jsjs';
-        
+        this.items=this.afDatabase.list('/requestedList/requested', { preserveSnapshot: true })
+       this.items.subscribe(snapshots=>{
+        console.log("snapshot????????????????????????????")
+        console.log(snapshots);
+        snapshots.forEach(element => {
+          console.log(element.key);
+          console.log(element.val().startLat);
+          this.requestedRoute.push({lat:element.val().startLat,lng:element.val().startLng},{lat:element.val().endLat,lng:element.val().endLng})
+          console.log(this.requestedRoute);
+          console.log(this.requestedRoute.length);
+          console.log(this.requestedRoute[0])
+           console.log(this.requestedRoute[1])
+
+
+            for(var i=0; i<4; i++){
+            console.log(i);
+            if(i==1){
+                //i가 1, 3, 5, 7
+                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                let newRoute=[];
+                newRoute.push(this.requestedRoute[0])
+                newRoute.push(this.requestedRoute[1])
+                console.log(newRoute);
+                let flightPath = new google.maps.Polyline({
+                path: newRoute,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+                });
+
+                flightPath.setMap(this.map);
+
+                this.Marker=new google.maps.Marker({
+                    map : this.map,
+                    position:this.requestedRoute[0],
+                    icon:'assets/icon/start.png'
+                })
+                this.markerStart.push(this.Marker)
+
+                this.MarkerEnd=new google.maps.Marker({
+                    map : this.map,
+                    position:location,
+                    icon:'assets/icon/end.png'
+                })
+                
+                this.markerEnd.push(this.Marker)
+            }
+            if(i==3){
+                let newRoute=[];
+                newRoute.push(this.requestedRoute[2])
+                newRoute.push(this.requestedRoute[3])
+                console.log(newRoute);
+                let flightPath = new google.maps.Polyline({
+                path: newRoute,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+                });
+
+                flightPath.setMap(this.map);
+            }
+        }
+        });
+    })
     }
     dragging(trigger){
         console.log("dragged"+trigger);
@@ -56,7 +122,6 @@ export class MapDirective implements OnInit,OnChanges  {
             position:location,
             icon:'assets/icon/start.png'
         })
-        alert(location.lat+","+location.lng);
         this.markerStart.push(this.Marker)
         if(this.markerStart.length>1){
             for(var i=0; i<this.markerStart.length; i++){
@@ -75,23 +140,13 @@ export class MapDirective implements OnInit,OnChanges  {
             position:location,
             icon:'assets/icon/end.png'
         })
-        var flightPlanCoordinates=[
-             {lat:  37.478898852648925, lng: 127.05001801602016},
-          {lat:  37.47854141742287, lng: 127.04825311452312},
-          {lat:  37.478895414589296, lng: 127.0502639543466},
-          {lat:  37.47890077067915, lng: 127.05022291557128}
-        ];
+        
         this.markerEnd.push(this.Marker)
-        var flightPath = new google.maps.Polyline({
-                    path: flightPlanCoordinates,
-                    geodesic: true,
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2
-                    });
-                    flightPath.setMap(this.map);
-        console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-              
+        
+                  var flightPlanCoordinates=[
+           
+        ];
+        
         console.log(this.markerEnd);
         if(this.markerEnd.length>1){
             for(var i=0; i<this.markerEnd.length; i++){
@@ -109,16 +164,14 @@ export class MapDirective implements OnInit,OnChanges  {
             var location={lat:this.startLat,lng:this.startLng};
             this.centerLocation(location);
             this.createMarkerForStart(location);
-            this.startLat=null;
-            this.startLng=null;
+            
         }
 
         if(this.endLat!=undefined||this.endLat!=null){
             var location={lat:this.endLat,lng:this.endLng};
             this.centerLocation(location);
             this.createMarkerForEnd(location);
-            this.endLat=null;
-            this.endLng=null;
+           
         }
 
         console.log("ngChange!!!!!!!in map " +this.startLat+","+this.startLng);
@@ -205,25 +258,8 @@ centerLocation(location){
         }
         let mapEl=document.getElementById('map');
         let map=new google.maps.Map(mapEl,mapOptions);
-        console.log("this is map");
-        console.log(map);
-        var flightPlanCoordinates = [
-          {lat: 37.772, lng: -122.214},
-          {lat: 21.291, lng: -157.821},
-          {lat: -18.142, lng: 178.431},
-          {lat: -27.467, lng: 153.027}
-        ];
-        var flightPath = new google.maps.Polyline({
-          path: flightPlanCoordinates,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-
-        flightPath.setMap(map);
-        console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-           
+     
+        
         return map;
     }
       getCurrentLocation2(){
