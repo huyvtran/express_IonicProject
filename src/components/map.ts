@@ -7,6 +7,9 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angu
 import { NavController, LoadingController } from 'ionic-angular';
 import { AvailbleCarDirective } from './available-cars/available-cars';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Dialogs } from '@ionic-native/dialogs';
+import { OneSignal } from '@ionic-native/onesignal';
+
 declare var google;
 
 @Component({
@@ -36,10 +39,22 @@ export class MapDirective implements OnInit,OnChanges  {
     requestedRoute=[];
       items:any;
     Marker:any;
+    MarkerEnd:any;
+    MarkerStart:any;
      markerStart=[];
      markerEnd=[];
-    constructor(public loading:LoadingController,public pick:PickupDirective,public geo:Geolocation,public afDatabase:AngularFireDatabase
+    constructor(public loading:LoadingController, private dialog:Dialogs,public pick:PickupDirective,public geo:Geolocation,public afDatabase:AngularFireDatabase
   ){
+
+      var notificationOpenedCallback = function(jsonData) {
+        console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+    };
+        // window["plugins"].OneSignal
+        //                 .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
+        //                 .handleNotificationOpened(notificationOpenedCallback)
+        //                 .endInit();
+
+
         this.items=this.afDatabase.list('/requestedList/requested', { preserveSnapshot: true })
        this.items.subscribe(snapshots=>{
         console.log("snapshot????????????????????????????")
@@ -47,21 +62,21 @@ export class MapDirective implements OnInit,OnChanges  {
         snapshots.forEach(element => {
           console.log(element.key);
           console.log(element.val().startLat);
-          this.requestedRoute.push({lat:element.val().startLat,lng:element.val().startLng},{lat:element.val().endLat,lng:element.val().endLng})
+          console.log(element.val());
+          this.requestedRoute.push({lat:element.val().startLat,lng:element.val().startLng,create_date:element.val().create_date},{lat:element.val().endLat,lng:element.val().endLng,create_date:element.val().create_date})
           console.log(this.requestedRoute);
           console.log(this.requestedRoute.length);
           console.log(this.requestedRoute[0])
            console.log(this.requestedRoute[1])
 
-
-            for(var i=0; i<4; i++){
+           var j=1;
+            for(var i=0; i<this.requestedRoute.length; i++){
             console.log(i);
-            if(i==1){
-                //i가 1, 3, 5, 7
-                console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-                let newRoute=[];
-                newRoute.push(this.requestedRoute[0])
-                newRoute.push(this.requestedRoute[1])
+               
+                if(i%2!=0){
+                     let newRoute=[];
+                newRoute.push(this.requestedRoute[(i-1)])
+                newRoute.push(this.requestedRoute[i])
                 console.log(newRoute);
                 let flightPath = new google.maps.Polyline({
                 path: newRoute,
@@ -73,36 +88,47 @@ export class MapDirective implements OnInit,OnChanges  {
 
                 flightPath.setMap(this.map);
 
-                this.Marker=new google.maps.Marker({
+                let Marker=new google.maps.Marker({
                     map : this.map,
-                    position:this.requestedRoute[0],
+                    position:this.requestedRoute[(i-1)],
                     icon:'assets/icon/start.png'
                 })
-                this.markerStart.push(this.Marker)
+                this.markerStart.push(Marker)
+                let popup=new google.maps.InfoWindow({
+                    content:'<h5>'+this.requestedRoute[(i-1)].create_date+'</h5> <button id="myid">신청</button>'
+                });
+                Marker.addListener('click',()=>{
+                    popup.open(this.map,Marker);
+                })
+                 google.maps.event.addListenerOnce(popup, 'domready', () => {
+                    document.getElementById('myid').addEventListener('click', () => {
 
-                this.MarkerEnd=new google.maps.Marker({
+                       
+                        // this.dialog.confirm("배달 신청하시겠습니까?", "확인").then((y)=>console.log("yessss"+y)).catch((n)=>console.log("nooo"+n))
+                         
+                        var notificationObj = { contents: {kr:"배달 왔습니다."+this.requestedRoute[(i-1)].create_date},
+                                            include_player_ids: ['1d8a2c4b-3a87-4ca0-9d1d-0797f54ca802']};
+                        window["plugins"].OneSignal.postNotification(notificationObj,
+                        function(successResponse) {
+                        alert(successResponse);
+                        },
+                        function (failedResponse) {
+                        console.log("Notification Post Failed: ", failedResponse);
+                        alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
+                        }
+                    );
+                    });
+                });
+
+                let MarkerEnd=new google.maps.Marker({
                     map : this.map,
-                    position:location,
+                    position:this.requestedRoute[i],
                     icon:'assets/icon/end.png'
                 })
                 
-                this.markerEnd.push(this.Marker)
-            }
-            if(i==3){
-                let newRoute=[];
-                newRoute.push(this.requestedRoute[2])
-                newRoute.push(this.requestedRoute[3])
-                console.log(newRoute);
-                let flightPath = new google.maps.Polyline({
-                path: newRoute,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-                });
-
-                flightPath.setMap(this.map);
-            }
+                this.markerEnd.push(MarkerEnd)
+                }
+           
         }
         });
     })
@@ -254,7 +280,7 @@ centerLocation(location){
         let mapOptions={
             center:location,
             zoom:15,
-            disableDefaultUI: true
+            disableDefaultUI: false
         }
         let mapEl=document.getElementById('map');
         let map=new google.maps.Map(mapEl,mapOptions);

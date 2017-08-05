@@ -66,25 +66,7 @@ export class HomePage implements OnInit,OnChanges  {
         });
     })
 
-// var notificationOpenedCallback = function(jsonData) {
-//     console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
-//   };
-
-//   window["plugins"].OneSignal
-//     .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
-//   	.handleNotificationOpened(notificationOpenedCallback)
-//     .endInit();
-//     var notificationObj = { contents: {en: "message body"},
-//                           include_player_ids: ['1d8a2c4b-3a87-4ca0-9d1d-0797f54ca802']};
-//     window["plugins"].OneSignal.postNotification(notificationObj,
-//     function(successResponse) {
-//       alert(successResponse);
-//     },
-//     function (failedResponse) {
-//       console.log("Notification Post Failed: ", failedResponse);
-//       alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
-//     }
-//   );
+  
     // localStorage.setItem("lastname", "Smith");
     // alert(localStorage.getItem("lastname"));
     this.pages=[
