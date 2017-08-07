@@ -3,15 +3,18 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-    <ion-buttons end>
-      <button (click)="viewRequestedAll()"><ion-icon name="navigate"></ion-icon></button>
-    </ion-buttons>
-    <ion-buttons end>
-      <button (click)="map.centerLocation()"><ion-icon name="navigate"></ion-icon></button>
-    </ion-buttons>
+    <div class="title">
+      지하철택배(배달원)
+    </div>
+      <ion-toggle [(ngModel)]="isToggled" style="float:right"  (ionChange)="notify()">activate</ion-toggle>
+   
+      <button class="nav"  ion-button (click)="viewRequestedAll()">history</button>
+     
+     <button class="nav" (click)="map.centerLocation()" ion-button >
+      <ion-icon name="navigate" ></ion-icon>
+    </button>
+      <!-- <button ion-button > </button> -->
+      
   </ion-navbar>
 
 </ion-header>
@@ -55,7 +58,7 @@
   <div class="map-wrapper">
     <map  (drag_second)="drag_second($event)" #map [isPickupRequested]="isPickupRequested"  [startLat]="startLat" [startLng]="startLng" [endLat]="endLat" [endLng]="endLng"></map>
   </div>
-  <div class="bottom request-control">
+  <!-- <div class="bottom request-control">
     <ion-row>
       <ion-col width-50> 
         <button ion-button light>
@@ -81,7 +84,7 @@
       </ion-col>
     </ion-row>
     
-  </div>
+  </div> -->
 </ion-content>
 
 

@@ -45,15 +45,24 @@ export class MapDirective implements OnInit,OnChanges  {
      markerEnd=[];
     constructor(public loading:LoadingController, private dialog:Dialogs,public pick:PickupDirective,public geo:Geolocation,public afDatabase:AngularFireDatabase
   ){
-
+     
+    
       var notificationOpenedCallback = function(jsonData) {
         console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+        alert(JSON.stringify(jsonData))
     };
         // window["plugins"].OneSignal
         //                 .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
         //                 .handleNotificationOpened(notificationOpenedCallback)
         //                 .endInit();
-
+  var notificationOpenedCallback = function(jsonData) {
+    console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+  };
+    //       window["plugins"].OneSignal
+    // .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
+  	// .handleNotificationOpened(notificationOpenedCallback)
+    // .endInit();
+ 
 
         this.items=this.afDatabase.list('/requestedList/requested', { preserveSnapshot: true })
        this.items.subscribe(snapshots=>{
@@ -104,19 +113,19 @@ export class MapDirective implements OnInit,OnChanges  {
                     document.getElementById('myid').addEventListener('click', () => {
 
                        
-                        // this.dialog.confirm("배달 신청하시겠습니까?", "확인").then((y)=>console.log("yessss"+y)).catch((n)=>console.log("nooo"+n))
+                        this.dialog.confirm("배달 신청하시겠습니까?", "확인").then((y)=>console.log("yessss"+y)).catch((n)=>console.log("nooo"+n))
                          
-                        var notificationObj = { contents: {kr:"배달 왔습니다."+this.requestedRoute[(i-1)].create_date},
-                                            include_player_ids: ['1d8a2c4b-3a87-4ca0-9d1d-0797f54ca802']};
-                        window["plugins"].OneSignal.postNotification(notificationObj,
-                        function(successResponse) {
-                        alert(successResponse);
-                        },
-                        function (failedResponse) {
-                        console.log("Notification Post Failed: ", failedResponse);
-                        alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
-                        }
-                    );
+                        var notificationObj = { contents: {en:"delivered"},
+                                            include_player_ids: ['f474e684-6d7a-4546-810d-140a1c153b54']};
+                        // window["plugins"].OneSignal.postNotification(notificationObj,
+                        // function(successResponse) {
+                        // alert(successResponse);
+                        // },
+                        // function (failedResponse) {
+                        // console.log("Notification Post Failed: ", failedResponse);
+                        // alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
+                        // }
+                    // );
                     });
                 });
 
@@ -166,7 +175,6 @@ export class MapDirective implements OnInit,OnChanges  {
             position:location,
             icon:'assets/icon/end.png'
         })
-        
         this.markerEnd.push(this.Marker)
         
                   var flightPlanCoordinates=[
@@ -220,15 +228,14 @@ export class MapDirective implements OnInit,OnChanges  {
     }
     
     ngOnInit(){
-        this.map=this.createMap();
-        this.addMapEventListener();
-        this.getCurrentLocation2().subscribe(location=>{
-      this.centerLocation(location)
+         this.map=this.createMap();
+        this.getCurrentLocation2().subscribe(currentLocation=>{
+           
         });
+         
+        
     }
-    centerLocation_refresh(location){
-
-    }
+        
 centerLocation(location){
     if(location){
       
@@ -284,13 +291,12 @@ centerLocation(location){
         }
         let mapEl=document.getElementById('map');
         let map=new google.maps.Map(mapEl,mapOptions);
-     
         
         return map;
     }
       getCurrentLocation2(){
     let loading=this.loading.create({
-      content:'locating.......'
+      content:'위치정보를 받아오는 중...'
     })
     loading.present().then(()=>{
     })
@@ -299,14 +305,18 @@ centerLocation(location){
       this.geo.getCurrentPosition(options).then(resp=>{
       let lat=resp.coords.latitude;
       let lng=resp.coords.longitude;
-      console.log(lat+","+lng);
-      console.log("11");
       let location=new google.maps.LatLng(lat,lng);
       this.map.panTo(location);
       loading.dismiss();
     }).catch((error =>{
-        alert(error);
-        loading.dismiss();
+        //position error 발생시 다시 위치 추척
+      this.geo.getCurrentPosition(options).then(resp=>{
+      let lat=resp.coords.latitude;
+      let lng=resp.coords.longitude;
+      let location=new google.maps.LatLng(lat,lng);
+      this.map.panTo(location);
+      loading.dismiss()
+        })
     }))
     
     })

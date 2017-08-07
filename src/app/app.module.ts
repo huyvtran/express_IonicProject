@@ -1,7 +1,6 @@
 import { ViewRequestListPage } from './../pages/view-request-list/view-request-list';
 import { ViewRequestedAllPage } from './../pages/view-requested-all/view-requested-all';
 
-import { WindowPage } from './../pages/window/window';
 import { EndPage } from './../pages/end/end';
 import { StartPage } from './../pages/start/start';
 import { SignupPage } from './../pages/signup/signup';
@@ -108,7 +107,7 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     CarProvider,
     SimulateProvider,
     MetroService,
-    GooglePlus,AngularFireAuth,Keyboard,MapDirective,PickupDirective,WindowPage
+    GooglePlus,AngularFireAuth,Keyboard,MapDirective,PickupDirective
   ]
 })
 export class AppModule {}

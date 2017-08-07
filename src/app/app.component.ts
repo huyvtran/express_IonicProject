@@ -19,14 +19,7 @@ export class MyApp {
         {title:'page One',component:LoginPage},
         {title:'page 2',component:HomePage}
       ]
-      var notificationOpenedCallback = function(jsonData) {
-    console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
-  };
-          window["plugins"].OneSignal
-    .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
-  	.handleNotificationOpened(notificationOpenedCallback)
-    .endInit();
- 
+    
       this.activePage=this.pages[0];
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.

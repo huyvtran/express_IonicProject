@@ -23,7 +23,7 @@ export class PickupDirective implements OnChanges  {
     private popup:any;
     public isactive:any;
     constructor(public loading:LoadingController,public geo:Geolocation){
-
+         console.log("PickupDirective")
     }
     ngOnChanges(changes){
          console.log("changed "+changes);

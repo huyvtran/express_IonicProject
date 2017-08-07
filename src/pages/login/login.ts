@@ -52,13 +52,13 @@ export class LoginPage implements OnInit {
         });
   }
   ngOnInit(){
-      var ref = this.afd.database.ref("profile");
-        firebase.database().ref().on('value', function(snapshot) {
-            // Do whatever
-        });
-     this.windowRef=window;
-    this.windowRef.RecaptchaVerifier= new firebase.auth.RecaptchaVerifier('sign-in-button')
-    this.windowRef.RecaptchaVerifier.render()
+    //   var ref = this.afd.database.ref("profile");
+    //     firebase.database().ref().on('value', function(snapshot) {
+    //         // Do whatever
+    //     });
+    //  this.windowRef=window;
+    // this.windowRef.RecaptchaVerifier= new firebase.auth.RecaptchaVerifier('sign-in-button')
+    // this.windowRef.RecaptchaVerifier.render()
   }
   get windowR(){
     return window;
@@ -105,11 +105,12 @@ export class LoginPage implements OnInit {
     this.googleplus.login({
       'webClientId':'916589339698-n71c3mmpsclus88rk6fp99la7sh0vnga.apps.googleusercontent.com'
     }).then((res)=>{
-
-      alert(res.email);
       firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(res.idToken)).then(
         suc=>{
-          this.navCtrl.setRoot(ProfilePage)
+          alert(res.email.split("@")[0])
+          localStorage.setItem("id", res.email.split("@")[0]);
+        // alert(localStorage.getItem("lastname"));
+          this.navCtrl.setRoot(HomePage)
         }).catch(ns=>{
           alert("fail"+ns);
         })

@@ -11,7 +11,6 @@ import { HomePage } from '../home/home';
  * on Ionic pages and navigation.
  */
 declare var google;
-@IonicPage()
 @Component({
   selector: 'page-start',
   templateUrl: 'start.html',

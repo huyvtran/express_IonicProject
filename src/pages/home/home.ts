@@ -12,13 +12,12 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseService } from './../../providers/firebase-service';
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { NavController, LoadingController, NavParams, ModalController } from 'ionic-angular';
-import { Geolocation } from '@ionic-native/geolocation';
 import {Keyboard} from '@ionic-native/keyboard';
 import firebase from 'firebase';
 import {AutocompletePage} from './../start/autocomplete';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { OneSignal } from '@ionic-native/onesignal';
-
+import { Geolocation } from '@ionic-native/geolocation';
 declare var google;
 @Component({
   selector: 'page-home',
@@ -46,6 +45,7 @@ export class HomePage implements OnInit,OnChanges  {
   public isactive:any;
   endPoint:string;
   items:any;
+  isToggled:boolean=false;
   pages: Array<{title:string,component:any}>;
   requestedRoute=[];
   firestore=firebase.database().ref('/pushtokens');
@@ -53,7 +53,6 @@ export class HomePage implements OnInit,OnChanges  {
   constructor(public navCtrl: NavController,public navParam:NavParams ,public mapDirective:MapDirective, public modalCtrl:ModalController, public loading:LoadingController, public fb:FirebaseService, 
     private geo:Geolocation,private afDatabase:AngularFireDatabase,public afAuth : AngularFireAuth
   ,public metro: MetroService,private oneSignal: OneSignal) {
-
  this.items=this.afDatabase.list('/requestedList/requested', { preserveSnapshot: true })
        this.items.subscribe(snapshots=>{
         console.log("snapshot????????????????????????????")
@@ -197,6 +196,57 @@ var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.
           console.log("trigger false")
         }
     }
+  notify(){
+    let options={timeout:5000,maximumAge :5000,enableHighAccuracy:true}
+    
+      this.geo.getCurrentPosition(options).then(resp=>{
+      let lat=resp.coords.latitude;
+      let lng=resp.coords.longitude;
+      this.location.lat=lat;
+      this.location.lng=lng;
+      let today = new Date();
+        let dd:number;
+        let day:string;
+        let month:string;
+         dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+
+        var yyyy = today.getFullYear();
+       var time=new Date().toLocaleTimeString('en-US', { hour12: false,hour: "numeric",minute: "numeric"});
+       console.log("time:"+time);
+       
+        dd<10?day='0'+dd:day=''+dd;
+        mm<10?month='0'+mm:month=''+mm;
+        
+	    let today_today = yyyy+'/'+month+'/'+day+' '+time;
+  console.log(today_today);
+  this.location.create_date=today_today;
+  this.location.isactive=true;
+  this.location.userid="dddd";
+      if(this.isToggled){
+      this.afDatabase.list("emp_status/AllUser/dddd").remove()
+      this.afDatabase.list("emp_status/AllUser/dddd").push(this.location)
+       this.afDatabase.list("emp_status/Available/dddd").push(this.location)
+       
+       this.afDatabase.list("emp_status/NotAvailable/dddd").remove()
+    }else{
+      this.location.lat=0;
+      this.location.lng=0;
+      this.afDatabase.list("emp_status/AllUser/dddd").remove()
+      this.afDatabase.list("emp_status/AllUser/dddd").push(this.location)
+       this.afDatabase.list("emp_status/NotAvailable/dddd").push(this.location)
+        this.afDatabase.list("emp_status/Available/dddd").remove()
+  
+        
+    }
+    }).catch((error =>{
+        alert(error);
+    }))
+      
+    //toggled to activate tracking location.
+    
+
+  }
   ngOnChanges() {
     console.log("change"+this.test);
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
@@ -258,7 +308,6 @@ var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.
                  location.lat=position.coords.latitude;
                 location.lng=position.coords.longitude;
                 var now=new Date();
-                location.create_date=new Date();
                //that.addMapLocation(location);
                 flightPlanCoordinates.push({lat:position.coords.latitude,lng:position.coords.longitude})
                 var flightPlanCoordinates2 = [
