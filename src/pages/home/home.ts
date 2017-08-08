@@ -11,7 +11,7 @@ import { Observable, Subscription } from 'rxjs/Rx';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { FirebaseService } from './../../providers/firebase-service';
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { NavController, LoadingController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, LoadingController, NavParams, ModalController, Platform } from 'ionic-angular';
 import {Keyboard} from '@ionic-native/keyboard';
 import firebase from 'firebase';
 import {AutocompletePage} from './../start/autocomplete';
@@ -39,11 +39,13 @@ export class HomePage implements OnInit,OnChanges  {
   startLng:any;
   endLat:any;
   endLng:any;
+  tokenId:string;
   activePage:any;
   startPoint:string;
   @Input() test:any;
   public isactive:any;
   endPoint:string;
+  userId:string;
   items:any;
   isToggled:boolean=false;
   pages: Array<{title:string,component:any}>;
@@ -52,7 +54,26 @@ export class HomePage implements OnInit,OnChanges  {
   firemsg=firebase.database().ref('/messages');
   constructor(public navCtrl: NavController,public navParam:NavParams ,public mapDirective:MapDirective, public modalCtrl:ModalController, public loading:LoadingController, public fb:FirebaseService, 
     private geo:Geolocation,private afDatabase:AngularFireDatabase,public afAuth : AngularFireAuth
-  ,public metro: MetroService,private oneSignal: OneSignal) {
+  ,public metro: MetroService,private oneSignal: OneSignal, public platform:Platform) {
+    var id=localStorage.getItem("id");
+    alert("id : "+id);
+    if(id!=undefined||id!=null){
+      this.userId=id;
+    }else{
+      this.userId="admin"
+    }
+    if(this.platform.is('android')){
+       window["plugins"].OneSignal
+                        .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
+                        .handleNotificationOpened(notificationOpenedCallback)
+                        .endInit();
+                         var notificationOpenedCallback = function(jsonData) {
+        console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+        alert(JSON.stringify(jsonData))
+    };
+    }
+   
+    
  this.items=this.afDatabase.list('/requestedList/requested', { preserveSnapshot: true })
        this.items.subscribe(snapshots=>{
         console.log("snapshot????????????????????????????")
@@ -82,7 +103,7 @@ export class HomePage implements OnInit,OnChanges  {
    
   }
   viewRequestedAll(){
-    this.navCtrl.push(ViewRequestedAllPage)
+    this.navCtrl.push(ViewRequestedAllPage,{userId:this.userId})
   }
    openPage(page){
     this.navCtrl.setRoot(page.component);
@@ -136,6 +157,8 @@ export class HomePage implements OnInit,OnChanges  {
   requesting(){
     if(this.startPoint==undefined||this.endPoint==undefined){
       alert("출발역, 도착역을 입력해주세요")
+     
+        
     }else{
       
 var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(this.startLat, this.startLng),
@@ -160,14 +183,19 @@ var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.
         
 	    let today_today = yyyy+'/'+month+'/'+day+' '+time;
   console.log(today_today);
-      this.request.user="kotran"
+      this.request.user=this.userId
       this.request.create_date=today_today;
       this.request.status="requested";
       this.request.startLat=this.startLat;
       this.request.startLng=this.startLng;
       this.request.endLat=this.endLat;
       this.request.endLng=this.endLng;
-      this.afDatabase.list('/requestedList/requested').push(this.request).then((success)=>{
+      if(this.platform.is('android')){
+        window["plugins"].OneSignal.getIds((idx)=>{
+
+         this.request.tokenId=idx.userId
+          this.afDatabase.list('/requestedList/requestedAll/').push(this.request)
+          this.afDatabase.list('/requestedList/requested/').push(this.request).then((success)=>{
         this.afAuth.authState.subscribe(auth=>{
           if(auth!=null||auth!=undefined){
           this.afDatabase.list('/profile/'+auth.uid+'/request').push(this.request).then((success)=>{
@@ -180,6 +208,14 @@ var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.
       }).catch((error)=>{
         alert(error);
       })
+      })
+      }else{
+        alert("웹에서는 사용불가");
+      }
+       
+     
+      
+      
     }
    
   }
@@ -222,20 +258,20 @@ var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.
   console.log(today_today);
   this.location.create_date=today_today;
   this.location.isactive=true;
-  this.location.userid="dddd";
+  this.location.userid=this.userId;
       if(this.isToggled){
-      this.afDatabase.list("emp_status/AllUser/dddd").remove()
-      this.afDatabase.list("emp_status/AllUser/dddd").push(this.location)
-       this.afDatabase.list("emp_status/Available/dddd").push(this.location)
+      this.afDatabase.list("emp_status/AllUser/"+this.userId).remove()
+      this.afDatabase.list("emp_status/AllUser/"+this.userId).push(this.location)
+       this.afDatabase.list("emp_status/Available/"+this.userId).push(this.location)
        
-       this.afDatabase.list("emp_status/NotAvailable/dddd").remove()
+       this.afDatabase.list("emp_status/NotAvailable"+this.userId).remove()
     }else{
       this.location.lat=0;
       this.location.lng=0;
-      this.afDatabase.list("emp_status/AllUser/dddd").remove()
-      this.afDatabase.list("emp_status/AllUser/dddd").push(this.location)
-       this.afDatabase.list("emp_status/NotAvailable/dddd").push(this.location)
-        this.afDatabase.list("emp_status/Available/dddd").remove()
+      this.afDatabase.list("emp_status/AllUser/"+this.userId).remove()
+      this.afDatabase.list("emp_status/AllUser/"+this.userId).push(this.location)
+       this.afDatabase.list("emp_status/NotAvailable/"+this.userId).push(this.location)
+        this.afDatabase.list("emp_status/Available/"+this.userId).remove()
   
         
     }

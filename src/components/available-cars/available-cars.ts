@@ -16,12 +16,14 @@ export class AvailbleCarDirective implements OnInit  {
     public carMarkers:Array<any>;
     popup:any;
     ngOnInit() {
-        //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-        //Add 'implements OnInit' to the class.
-        this.fetchAndRefreshCars();
+        
     }
     constructor(public carService:CarProvider, private dialog:Dialogs){
         this.carMarkers=[];
+        console.log("AvailbleCarDirective")
+        //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+        //Add 'implements OnInit' to the class.
+        this.fetchAndRefreshCars();
     }
     deleteCarMarker(){
         this.carMarkers=[];

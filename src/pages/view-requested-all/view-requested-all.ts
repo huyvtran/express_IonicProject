@@ -13,8 +13,15 @@ import { AngularFireDatabase } from 'angularfire2/database';
 })
 export class ViewRequestedAllPage {
   items:any;
+  userId:string;
+  shown:any;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afd:AngularFireDatabase) {
-       this.items=this.afd.list('/requestedList/requested')
+      this.userId=this.navParams.get("userId");
+       
+      this.items=this.afd.list('/requestedList/requested');
+      console.log(this.items);
+      
+
 
  }
 
