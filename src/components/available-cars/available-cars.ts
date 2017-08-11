@@ -1,3 +1,4 @@
+import { AngularFireDatabase } from 'angularfire2/database';
 import { CarProvider } from './../../providers/car/car';
 import { Component ,Input,OnInit} from '@angular/core';
 import * as SlidingMarker from 'marker-animate-unobtrusive';
@@ -18,7 +19,7 @@ export class AvailbleCarDirective implements OnInit  {
     ngOnInit() {
         
     }
-    constructor(public carService:CarProvider, private dialog:Dialogs){
+    constructor(public carService:CarProvider, private dialog:Dialogs,public afDatabase:AngularFireDatabase){
         this.carMarkers=[];
         console.log("AvailbleCarDirective")
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -30,8 +31,6 @@ export class AvailbleCarDirective implements OnInit  {
     }
     updateCarMarker(car){
         var numofCars=this.carMarkers.length;
-        console.log("length2 : "+this.carMarkers.length);
-        console.log(car.isactive);
         for(var i=0; i<this.carMarkers.length; i++){
             
             if(car.isactive=="false"){
@@ -57,18 +56,19 @@ export class AvailbleCarDirective implements OnInit  {
         console.log(this.carMarkers);
         console.log("??"+this.carMarkers.length+","+numOfCars);
         for(var i=0,numOfCars=this.carMarkers.length;  i < numofCars; i++){
-            console.log("length333"+i)
             
             if(this.carMarkers[i].id===car.id){
                 if(this.carMarkers[i].isactive=="false"){
                 this.carMarkers[i].setVisible(false);
                  return
                 }else{
+                    console.log("new car coord lat "+car.coord.lat);
+                    //  this.afDatabase.list("employees_status/Available/kotran").push("testttest")
+                    this.carMarkers[i].setPosition(new google.maps.LatLng(car.coord.lat,car.coord.lng));
                     this.carMarkers[i].setVisible(true);
                  return
                 }
             }
-            console.log("setvisible");
             console.log(this.carMarkers);
         }
         
@@ -91,7 +91,7 @@ export class AvailbleCarDirective implements OnInit  {
         carMarker.set('created_date',car.created_date);
         carMarker.set('isactive',car.isactive);
         let popup=new google.maps.InfoWindow({
-            content:'<h5>'+car.userid+'</h5>\n<h5>'+car.created_date+'</h5>'+'<button id="myid">신청</button>'
+            content:'<p>'+car.coord.lat+'</p><h5>'+car.userid+'</h5>\n<h5>'+car.created_date+'</h5>'+'<button id="myid">신청</button>'
         });
         carMarker.addListener('click',()=>{
               popup.open(this.map,carMarker);

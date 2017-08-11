@@ -1,10 +1,12 @@
+import { Http,Headers ,RequestOptions} from '@angular/http';
+import { request } from './models/request';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { PickupCar } from './pickup-car/pickup-car';
 import { CarProvider } from './../providers/car/car';
 import { PickupDirective } from './../pickup/pickup';
 import { Observable } from 'rxjs/Rx';
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController, Platform } from 'ionic-angular';
 import { AvailbleCarDirective } from './available-cars/available-cars';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Dialogs } from '@ionic-native/dialogs';
@@ -36,21 +38,50 @@ export class MapDirective implements OnInit,OnChanges  {
     public full="";
     lat:number;
     lng:number;
+    tokenid:string;
     requestedRoute=[];
       items:any;
     Marker:any;
     MarkerEnd:any;
     MarkerStart:any;
      markerStart=[];
+     request={} as request
      markerEnd=[];
-    constructor(public loading:LoadingController, private dialog:Dialogs,public pick:PickupDirective,public geo:Geolocation,public afDatabase:AngularFireDatabase
+    constructor(public loading:LoadingController,public platform:Platform, public http:Http, private dialog:Dialogs,public pick:PickupDirective,public geo:Geolocation,public afDatabase:AngularFireDatabase
   ){
+//      
+// 
+   
+ 
      
-    
-      var notificationOpenedCallback = function(jsonData) {
-        console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
-        alert(JSON.stringify(jsonData))
-    };
+   
+     var data={
+         "app_id": "2192c71b-49b9-4fe1-bee8-25617d89b4e8", 
+  "include_player_ids": ["f474e684-6d7a-4546-810d-140a1c153b54"],
+  "data": {"foo": "bar"},
+  "contents": {"en": "한글 테스트"}
+     }
+     let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    if(this.platform.is('android')){
+        
+    }else{
+        //  this.http.post('https://onesignal.com/api/v1/notifications', data, options).toPromise().then((res)=>{
+        //     console.log(res.json())
+        // }).catch((error)=>{
+        //     alert(error);
+        // })
+    }
+      
+    //  let headers = new Headers({ 'Authorization': 'Bearer Xw8t8tVjgtT0t--jRrsD7oFqZEq2AFBIjF9XSwoqAuYAAAFdv6Kaqg' });
+    // let options = new RequestOptions({ headers: headers });
+    //   this.http.get('https://kapi.kakao.com/v1/user/me', options).toPromise().then((res)=>{
+    //       console.log(res.json())
+    //       alert(res.json());
+    //   }).catch((error)=>{
+    //     alert(error);
+    // })
+     
         // window["plugins"].OneSignal
         //                 .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
         //                 .handleNotificationOpened(notificationOpenedCallback)
@@ -72,7 +103,8 @@ export class MapDirective implements OnInit,OnChanges  {
           console.log(element.key);
           console.log(element.val().startLat);
           console.log(element.val());
-          this.requestedRoute.push({lat:element.val().startLat,lng:element.val().startLng,create_date:element.val().create_date},{lat:element.val().endLat,lng:element.val().endLng,create_date:element.val().create_date})
+          this.requestedRoute.push({tokenId:element.val().tokenId,key:element.key ,endLng:element.val().endLng,user:element.val().user,endLat:element.val().endLat ,lat:element.val().startLat,lng:element.val().startLng,create_date:element.val().create_date, startPoint:element.val().startPoint,endPoint:element.val().endPoint,status:element.val().status},
+          {lat:element.val().endLat,lng:element.val().endLng,create_date:element.val().create_date, startPoint:element.val().startPoint,endPoint:element.val().endPoint,status:element.val().status})
           console.log(this.requestedRoute);
           console.log(this.requestedRoute.length);
           console.log(this.requestedRoute[0])
@@ -104,28 +136,57 @@ export class MapDirective implements OnInit,OnChanges  {
                 })
                 this.markerStart.push(Marker)
                 let popup=new google.maps.InfoWindow({
-                    content:'<h5>'+this.requestedRoute[(i-1)].create_date+'</h5> <button id="myid">신청</button>'
+                    content:'<p> 출발역 : '+this.requestedRoute[(i-1)].startPoint+'</p><p>도착역 :'+this.requestedRoute[(i-1)].endPoint+'</p><p> 발생일 : '+this.requestedRoute[(i-1)].create_date+'</p> <button id="myid" value="'+this.requestedRoute[(i-1)].key+'$'+this.requestedRoute[(i-1)].startPoint+'$'+this.requestedRoute[(i-1)].endPoint+'$'+this.requestedRoute[(i-1)].lat+'$'+this.requestedRoute[(i-1)].lng+'$'+this.requestedRoute[(i-1)].endLat+'$'+this.requestedRoute[(i-1)].endLng+'$'+this.requestedRoute[(i-1)].create_date+'$'+this.requestedRoute[(i-1)].tokenId+'$'+this.requestedRoute[(i-1)].user+'">신청</button>'
                 });
+              
                 Marker.addListener('click',()=>{
                     popup.open(this.map,Marker);
                 })
                  google.maps.event.addListenerOnce(popup, 'domready', () => {
                     document.getElementById('myid').addEventListener('click', () => {
-
+                       var complex=(<HTMLInputElement>document.getElementById('myid')).value;
+                       var key=complex.split("$")[0];
+                       var startPoint=complex.split("$")[1];
+                       var endPoint=complex.split("$")[2];
+                       var startLat=complex.split("$")[3];
+                       var startLng=complex.split("$")[4];
+                       var endLat=complex.split("$")[5];
+                       var endLng=complex.split("$")[6];
+                       var create_date=complex.split("$")[7];
+                       var tokenId=complex.split("$")[8];
+                       var user=complex.split("$")[9];
                        
-                        this.dialog.confirm("배달 신청하시겠습니까?", "확인").then((y)=>console.log("yessss"+y)).catch((n)=>console.log("nooo"+n))
-                         
+                        this.dialog.confirm("배달 신청하시겠습니까?", "확인").then((y)=>{
+                            console.log("yessss"+y)
+                        }).catch((n)=>{
+                            console.log("nooo"+n)
+                        })
+                        var data=this.afDatabase.list('/requestedList/requested/'+key);
+                        console.log(data);
+                        console.log(this.request);
+                        this.request.create_date=create_date;
+                        this.request.startPoint=startPoint;
+                        this.request.endPoint=endPoint;
+                        this.request.startLat=parseInt(startLat);
+                        this.request.endLat=parseInt(endLat);
+                        this.request.endLng=parseInt(endLng);
+                        this.request.startLng=parseInt(startLng);
+                        this.request.user="ksks";
+                        this.request.status="assigned";
+                         this.afDatabase.list('/requestedList/assigned').push(this.request);
+
+                         this.afDatabase.list('/requestedList/requested/'+key).remove();
                         var notificationObj = { contents: {en:"delivered"},
-                                            include_player_ids: ['f474e684-6d7a-4546-810d-140a1c153b54']};
-                        // window["plugins"].OneSignal.postNotification(notificationObj,
-                        // function(successResponse) {
-                        // alert(successResponse);
-                        // },
-                        // function (failedResponse) {
-                        // console.log("Notification Post Failed: ", failedResponse);
-                        // alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
-                        // }
-                    // );
+                                            include_player_ids: [tokenId]};
+                        window["plugins"].OneSignal.postNotification(notificationObj,
+                        function(successResponse) {
+                        alert(successResponse);
+                        },
+                        function (failedResponse) {
+                        console.log("Notification Post Failed: ", failedResponse);
+                        alert("Notification Post Failed:\n" + JSON.stringify(failedResponse));
+                        }
+                    );
                     });
                 });
 

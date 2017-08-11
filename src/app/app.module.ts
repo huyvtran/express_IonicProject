@@ -18,7 +18,6 @@ import { IonicApp, IonicErrorHandler, IonicModule, NavController } from 'ionic-a
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { FirebaseService } from '../providers/firebase-service';
-import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { PickupDirective} from '../pickup/pickup';
 import { AvailbleCarDirective } from '../components/available-cars/available-cars';
 import { NativeGeocoder,NativeGeocoderReverseResult} from '@ionic-native/native-geocoder';
@@ -35,8 +34,10 @@ import firebase from 'firebase';
 import {Keyboard} from '@ionic-native/keyboard';
 import { Dialogs } from '@ionic-native/dialogs';
 import { OneSignal } from '@ionic-native/onesignal';
+import { BackgroundGeolocation, BackgroundGeolocationConfig } from '@ionic-native/background-geolocation';
 
 import {AutocompletePage} from '../pages/start/autocomplete';
+import { MetroServiceProvider } from '../providers/metro-service/metro-service';
 
   var firebaseConfig = {
      apiKey: "AIzaSyDA8QXihUwFwPuvN2N3Tx44AQQt20wwskk",
@@ -107,7 +108,8 @@ import {AutocompletePage} from '../pages/start/autocomplete';
     CarProvider,
     SimulateProvider,
     MetroService,
-    GooglePlus,AngularFireAuth,Keyboard,MapDirective,PickupDirective
+    GooglePlus,AngularFireAuth,Keyboard,MapDirective,PickupDirective,
+    MetroServiceProvider
   ]
 })
 export class AppModule {}

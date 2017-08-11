@@ -1,9 +1,11 @@
+import { MetroServiceProvider } from './../../providers/metro-service/metro-service';
 import { ViewRequestListPage } from './../view-request-list/view-request-list';
 import { ViewRequestedAllPage } from './../view-requested-all/view-requested-all';
 import { request } from './../../components/models/request';
 import { LoginPage } from './../login/login';
 import { EndPage } from './../end/end';
 import { StartPage } from './../start/start';
+import { Http,Headers ,RequestOptions} from '@angular/http';
 import { Location } from './../../components/models/location';
 import { MetroService } from './../../services/metroService';
 import { MapDirective } from './../../components/map';
@@ -17,7 +19,10 @@ import firebase from 'firebase';
 import {AutocompletePage} from './../start/autocomplete';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { OneSignal } from '@ionic-native/onesignal';
+import { BackgroundGeolocation, BackgroundGeolocationConfig } from '@ionic-native/background-geolocation';
+
 import { Geolocation } from '@ionic-native/geolocation';
+
 declare var google;
 @Component({
   selector: 'page-home',
@@ -44,6 +49,7 @@ export class HomePage implements OnInit,OnChanges  {
   startPoint:string;
   @Input() test:any;
   public isactive:any;
+  interval:any;
   endPoint:string;
   userId:string;
   items:any;
@@ -52,25 +58,34 @@ export class HomePage implements OnInit,OnChanges  {
   requestedRoute=[];
   firestore=firebase.database().ref('/pushtokens');
   firemsg=firebase.database().ref('/messages');
+  result_metro:any;
+  public watch: any;    
+  public lat: number = 0;
+  public lng: number = 0;
   constructor(public navCtrl: NavController,public navParam:NavParams ,public mapDirective:MapDirective, public modalCtrl:ModalController, public loading:LoadingController, public fb:FirebaseService, 
     private geo:Geolocation,private afDatabase:AngularFireDatabase,public afAuth : AngularFireAuth
-  ,public metro: MetroService,private oneSignal: OneSignal, public platform:Platform) {
+  ,public metro: MetroServiceProvider,private oneSignal: OneSignal, public platform:Platform,private backgroundGeolocation: BackgroundGeolocation,public http:Http) {
     var id=localStorage.getItem("id");
-    alert("id : "+id);
+    console.log("metrometro")
+    var result_metro=this.metro.getMetro().subscribe(data=>{
+      console.log("result_Metro")
+      console.log(data);
+      this.result_metro=data;
+    });
     if(id!=undefined||id!=null){
       this.userId=id;
     }else{
       this.userId="admin"
     }
     if(this.platform.is('android')){
-       window["plugins"].OneSignal
-                        .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
-                        .handleNotificationOpened(notificationOpenedCallback)
-                        .endInit();
-                         var notificationOpenedCallback = function(jsonData) {
-        console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
-        alert(JSON.stringify(jsonData))
-    };
+    //    window["plugins"].OneSignal
+    //                     .startInit("2192c71b-49b9-4fe1-bee8-25617d89b4e8", "916589339698")
+    //                     .handleNotificationOpened(notificationOpenedCallback)
+    //                     .endInit();
+    //                      var notificationOpenedCallback = function(jsonData) {
+    //     console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+    //     alert(JSON.stringify(jsonData))
+    // };
     }
    
     
@@ -99,9 +114,9 @@ export class HomePage implements OnInit,OnChanges  {
     this.address = {
       place: ''
     };
-   
-   
+   //this.startTracking();
   }
+ 
   viewRequestedAll(){
     this.navCtrl.push(ViewRequestedAllPage,{userId:this.userId})
   }
@@ -131,6 +146,15 @@ export class HomePage implements OnInit,OnChanges  {
     let me = this;
     modal.onDidDismiss(data => {
       if(data!=null){
+        console.log("modalOn")
+        console.log(this.result_metro);
+        for(var i=0; i<this.result_metro.length; i++){
+          var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(data.lat,data.lng),
+                                                                              new google.maps.LatLng(this.result_metro[i].XPOINT_WGS, this.result_metro[i].YPOINT_WGS));       
+          distance=distance/1000;
+          distance=distance.toFixed(2);
+          console.log(this.result_metro[i].STATION_NM+","+distance)
+        }
         this.startPoint=data.loc;
       this.startLat=data.lat;
       this.startLng=data.lng;
@@ -191,24 +215,24 @@ var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.
       this.request.endLat=this.endLat;
       this.request.endLng=this.endLng;
       if(this.platform.is('android')){
-        window["plugins"].OneSignal.getIds((idx)=>{
+      //   window["plugins"].OneSignal.getIds((idx)=>{
 
-         this.request.tokenId=idx.userId
-          this.afDatabase.list('/requestedList/requestedAll/').push(this.request)
-          this.afDatabase.list('/requestedList/requested/').push(this.request).then((success)=>{
-        this.afAuth.authState.subscribe(auth=>{
-          if(auth!=null||auth!=undefined){
-          this.afDatabase.list('/profile/'+auth.uid+'/request').push(this.request).then((success)=>{
-          }).catch((error)=>{
-            alert(error);
-          })
-          }
+      //    this.request.tokenId=idx.userId
+      //     this.afDatabase.list('/requestedList/requestedAll/').push(this.request)
+      //     this.afDatabase.list('/requestedList/requested/').push(this.request).then((success)=>{
+      //   this.afAuth.authState.subscribe(auth=>{
+      //     if(auth!=null||auth!=undefined){
+      //     this.afDatabase.list('/profile/'+auth.uid+'/request').push(this.request).then((success)=>{
+      //     }).catch((error)=>{
+      //       alert(error);
+      //     })
+      //     }
           
-        })
-      }).catch((error)=>{
-        alert(error);
-      })
-      })
+      //   })
+      // }).catch((error)=>{
+      //   alert(error);
+      // })
+      // })
       }else{
         alert("웹에서는 사용불가");
       }
@@ -260,18 +284,24 @@ var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.
   this.location.isactive=true;
   this.location.userid=this.userId;
       if(this.isToggled){
-      this.afDatabase.list("emp_status/AllUser/"+this.userId).remove()
-      this.afDatabase.list("emp_status/AllUser/"+this.userId).push(this.location)
-       this.afDatabase.list("emp_status/Available/"+this.userId).push(this.location)
-       
-       this.afDatabase.list("emp_status/NotAvailable"+this.userId).remove()
+        this.interval=setInterval(()=>{
+           this.afDatabase.list("employees_status/AllUser/"+this.userId).remove()
+          this.afDatabase.object("employees_status/AllUser/"+this.userId).set(this.location);
+          this.afDatabase.list("employees_status/Available/"+this.userId).remove()
+          this.afDatabase.object("employees_status/Available/"+this.userId).set(this.location);
+          
+          this.afDatabase.list("employees_status/NotAvailable"+this.userId).remove()
+        },5000)
+     
     }else{
+      clearInterval(this.interval);
+      this.interval.sto
       this.location.lat=0;
       this.location.lng=0;
-      this.afDatabase.list("emp_status/AllUser/"+this.userId).remove()
-      this.afDatabase.list("emp_status/AllUser/"+this.userId).push(this.location)
-       this.afDatabase.list("emp_status/NotAvailable/"+this.userId).push(this.location)
-        this.afDatabase.list("emp_status/Available/"+this.userId).remove()
+      this.afDatabase.list("employees_status/AllUser/"+this.userId).remove()
+      this.afDatabase.object("employees_status/AllUser/"+this.userId).set(this.location)
+       this.afDatabase.object("employees_status/NotAvailable/"+this.userId).set(this.location)
+        this.afDatabase.list("employees_status/Available/"+this.userId).remove()
   
         
     }

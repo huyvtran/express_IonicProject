@@ -24,7 +24,7 @@ export class CarProvider {
   }
   getCars(lat,lng){
     return Observable
-      .interval(2000)
+      .interval(5000)
       .switchMap(()=>
       this.simulate.getCars(lat,lng))
       .share();
